@@ -3,12 +3,12 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 # Set install prefix if not set already
-INSTALL_PREFIX ?= $(HOME)
+TERRAFORM_PLUGIN_INSTALL_PREFIX ?= $(HOME)
 
 # Get directory of makefile without trailing slash
 ROOT_DIR := $(patsubst %/, %, $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 
-INSTALL_DIR := $(patsubst %/, %, $(INSTALL_PREFIX))
+TERRAFORM_PLUGIN_INSTALL_DIR := $(patsubst %/, %, $(TERRAFORM_PLUGIN_INSTALL_PREFIX))
 
 .PHONY: help
 help: ## This help dialog.
@@ -63,4 +63,4 @@ install-provider: ## Installs Provider
 	@mkdir -p $(INSTALL_DIR)/.terraform.d/plugins
 	@mkdir -p $(ROOT_DIR)/vendor
 	curl -sfL https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.1/terraform-provider-libvirt-0.6.1+git.1578064534.db13b678.Ubuntu_18.04.amd64.tar.gz -o $(ROOT_DIR)/vendor/terraform-provider-libvirt.tar.gz
-	tar -C $(INSTALL_DIR)/.terraform.d/plugins -xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt.tar.gz terraform-provider-libvirt
+	tar -C $(TERRAFORM_PLUGIN_INSTALL_DIR)/.terraform.d/plugins -xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt.tar.gz terraform-provider-libvirt

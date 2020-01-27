@@ -13,20 +13,23 @@ on:
   pull_request:
     branches:
       - master
+name: terraform
 jobs:
-  terraform:
-    name: 'Terraform'
+  lint:
+    name: 'terraform'
     runs-on: ubuntu-latest
     strategy:
       matrix:
         tfv: [0.12.20]
-        modules: ['./modules/net', 'modules/vm']
+        modules: ['modules/net', 'modules/vm']
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
       - name: Install
         run: |
             make install-provider
+        env:
+          TERRAFORM_PLUGIN_INSTALL_DIR: "."
       - name: 'Terraform Format'
         uses: hashicorp/terraform-github-actions@master
         with:
