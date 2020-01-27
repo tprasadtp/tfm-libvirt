@@ -1,0 +1,50 @@
+# yamllint disable-line rule:document-start
+on:
+  push:
+    branches:
+      - master
+      - stable
+    paths-ignore:
+      - ".gitignore"
+      - ".envrc"
+      - "**.md"
+      - ".vscode/**"
+      - ".dependabot/**"
+  pull_request:
+    branches:
+      - master
+jobs:
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tfv: [0.12.20]
+        modules: ['./modules/net', 'modules/vm']
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@master
+      - name: Install
+        run: |
+            make install-provider
+      - name: 'Terraform Format'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ matrix.tfv }}
+          tf_actions_subcommand: 'fmt'
+          tf_actions_working_dir: ${{ matrix.modules }}
+          tf_actions_comment: false
+      - name: 'Terraform Init'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ matrix.tfv }}
+          tf_actions_subcommand: 'init'
+          tf_actions_working_dir: ${{ matrix.modules }}
+          tf_actions_comment: false
+      - name: 'Terraform Validate'
+        uses: hashicorp/terraform-github-actions@master
+        with:
+          tf_actions_version: ${{ matrix.tfv }}
+          tf_actions_subcommand: 'validate'
+          tf_actions_working_dir: ${{ matrix.modules }}
+          tf_actions_comment: false

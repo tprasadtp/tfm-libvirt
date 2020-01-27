@@ -1,7 +1,7 @@
 variable "cloudimage_url" {
   type        = string
   description = "Cloud Image URL"
-  default     = "bionic"
+  default     = "https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
 }
 
 variable "disk_size" {
@@ -47,10 +47,15 @@ variable "autostart" {
 
 variable "network_config_path" {
   description = "Path to Network config"
-  default     = null
+  type        = string
 }
 
 variable "user_data_path" {
   description = "Path to User data config"
+  type        = string
+}
+
+variable "cloudimage_pool" {
+  description = "Cloud Image Pool. This is where downloaded cloud images will be stored"
   default     = null
 }
