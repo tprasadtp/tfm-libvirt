@@ -20,8 +20,11 @@
 | memory\_size | Memory size in MiB | `number` | `512` | no |
 | network | Network Name to attach VM | `string` | `"default"` | no |
 | pool | Pool for Disks | `string` | `"default"` | no |
+| vm\_count | Number of VM Instances to create | `number` | `1` | no |
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| vm\_ip\_address | Primary IP Addresses of machine(s) |
 

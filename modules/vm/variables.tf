@@ -6,7 +6,7 @@ variable "cloudimage_url" {
 
 variable "disk_size" {
   type        = number
-  description = "Root FS disk size"
+  description = "Root FS disk size in GB. Please do not specify it in bytes!"
   default     = 20
 }
 
@@ -22,9 +22,9 @@ variable "pool" {
   default     = "default"
 }
 
-variable "domain" {
+variable "domain_prefix" {
   type        = string
-  description = "Ubuntu domain Name"
+  description = "Domain Prefix. If count is > 1, -{count} is appended to the domain created."
 }
 
 variable "cpu_count" {
@@ -48,6 +48,7 @@ variable "autostart" {
 variable "network_config_path" {
   description = "Path to Network config"
   type        = string
+  default     = null
 }
 
 variable "user_data_path" {
@@ -55,7 +56,14 @@ variable "user_data_path" {
   type        = string
 }
 
-variable "cloudimage_pool" {
-  description = "Cloud Image Pool. This is where downloaded cloud images will be stored"
-  default     = null
+variable "vm_count" {
+  description = "Number of VM Instances to create"
+  default     = 1
+  type        = number
+}
+
+variable "cloud_image_pool" {
+  description = "Pool to use downloaded cloud images"
+  default     = "default"
+  type        = string
 }

@@ -1,6 +1,6 @@
 # Terraform Modules for libvirt provider
 
-This repository contains terraform modules tp quickly create `libvirt` VMs from cloud images using [Terraform][terraform]
+This repository contains terraform modules to quickly create `libvirt` VMs from cloud images using [Terraform][terraform]
 with [libvirt][terraform-libvirt] provider.
 
 [![TFM](https://github.com/tprasadtp/tfm-libvirt/workflows/terraform/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=terraform)
@@ -30,21 +30,21 @@ terraform apply
 
 > It is recommended to add this repo as a submodule
 > and use the terraform modules from modules folder.
+> This module is meant to quickly create headless machines in a reproducible way. GPU and other advanced configs are not supported.
+> You might look into provider's documentation for creating VMs which support additional features.
 
 ## Cloud images
 
 VMs use cloud images as its easier to configure them them using `cloud-init`.
 
-## Supported OS
-
-Following Guests are supported. Please specify an appropriate
-image while running terraform. Links to cloud images are also mentioned below.
+## Supported Guest OS
 
 - [Ubuntu](https://cloud-images.ubuntu.com/)
 - [CentOS](http://cloud.centos.org/centos/8/x86_64/images/)
 - [Debian](http://cdimage.debian.org/cdimage/openstack/)
 - [Fedora](https://alt.fedoraproject.org/cloud/)
 - [OpenSUSE](https://software.opensuse.org/distributions/leap#jeos-ports)
+- ArchLinux(You must build the qcow2 image or use openstack image if available)
 
 [terraform]: https://terraform.io
 [terraform-libvirt]: https://github.com/dmacvicar/terraform-provider-libvirt

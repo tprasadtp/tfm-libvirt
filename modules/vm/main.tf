@@ -1,21 +1,6 @@
-# A pool for all cluster volumes
-resource "libvirt_pool" "iso" {
-  name = "iso"
-  type = "dir"
-  path = pathexpand("~/Public/ISO-Images/Terraform")
-  // If cloudimage_pool is null, we need this otherwise we dont
-  count = var.cloudimage_pool == null ? 1 : 0
-
-  // prevent destroying this
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 # Base Image
 resource "libvirt_volume" "base" {
-  // Because we used count on libvirt_pool.iso, terraform forces you to refer it by index
-  pool = var.cloudimage_pool == null ? libvirt_pool.iso[0].id : var.cloudimage_pool
+  pool = var.cloud_image_pool
 
   // Get the URL and use the image name as volume name
   name = element(split("/", var.cloudimage_url), length(split("/", var.cloudimage_url)) - 1)
@@ -25,43 +10,49 @@ resource "libvirt_volume" "base" {
 }
 
 # Main root Volume
-resource "libvirt_volume" "vm" {
-  name           = var.domain
+resource "libvirt_volume" "volume" {
+  name           = var.vm_count > 1 ? format("%s-%d.qcow2", var.domain_prefix, count.index + 1) : var.domain_prefix
   base_volume_id = libvirt_volume.base.id
   pool           = var.pool
-  size           = var.disk_size
+  size           = var.disk_size * 1024 * 1024 * 1024
   format         = "qcow2"
+  count          = var.vm_count
 }
 
 
 # Cloud init config
 data "template_file" "user_data" {
+  count    = var.vm_count
   template = file(var.user_data_path)
-}
-
-data "template_file" "network_config" {
-  template = file(var.network_config_path)
+  vars = {
+    hostname = format("%s-%d", var.domain_prefix, count.index + 1)
+  }
 }
 
 # for more info about paramater check this out
 # https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
 resource "libvirt_cloudinit_disk" "cloudinit" {
-  name           = format("%s-cloudinit.iso", var.domain)
-  user_data      = data.template_file.user_data.rendered
-  network_config = data.template_file.network_config.rendered
-  pool           = var.pool
+  count = var.vm_count
+  name  = var.vm_count > 1 ? format("%s-%d.iso", var.domain_prefix, count.index + 1) : var.domain_prefix
+  // user_data      = templatefile(var.user_data_path, { instance_name = format("%s-%d", var.domain_prefix, count.index+1)})
+  user_data = element(data.template_file.user_data.*.rendered, count.index)
+  pool      = var.pool
 }
 
 # Create the machine
 resource "libvirt_domain" "domain" {
-  name   = var.domain
+
+  count  = var.vm_count
+  name   = var.vm_count > 1 ? format("%s-%d", var.domain_prefix, count.index + 1) : var.domain_prefix
   memory = var.memory_size
   vcpu   = var.cpu_count
 
-  cloudinit = libvirt_cloudinit_disk.cloudinit.id
+  cloudinit = element(libvirt_cloudinit_disk.cloudinit.*.id, count.index)
 
   network_interface {
-    network_name = var.network
+    network_name   = var.network
+    wait_for_lease = true
+
   }
 
   # IMPORTANT: this is a known bug on cloud images, since they expect a console
@@ -80,7 +71,11 @@ resource "libvirt_domain" "domain" {
   }
 
   disk {
-    volume_id = libvirt_volume.vm.id
+    volume_id = element(libvirt_volume.volume.*.id, count.index)
+  }
+
+  cpu = {
+    mode = "host-passthrough"
   }
 
   graphics {
