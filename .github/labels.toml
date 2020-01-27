@@ -8,9 +8,9 @@ color = "fcc7f0"
 name = "Area: Testing"
 description = "Testing"
 
-["Area: Ansible"]
+["Area: Provider"]
 color = "fcc7f0"
-name = "Area: Ansible"
+name = "Area: Provider"
 description = ""
 
 ["Priority: Critical"]
@@ -108,27 +108,7 @@ color = "f4aea1"
 name = "Type: Maintenance"
 description = "Maintenance tasks/package updates/prettify etc"
 
-["Deps: Docker"]
+["Deps: Terraform"]
 color = "ceef86"
-name = "Deps: Docker"
-description = ""
-
-["Deps: Go"]
-color = "ceef86"
-name = "Deps: Go"
-description = ""
-
-["Deps: Python"]
-color = "ceef86"
-name = "Deps: Python"
-description = "Python Deps"
-
-["Deps: Rust"]
-color = "ceef86"
-name = "Deps: Rust"
-description = ""
-
-["Deps: Submodule"]
-color = "ceef86"
-name = "Deps: Submodule"
+name = "Deps: Terraform"
 description = ""

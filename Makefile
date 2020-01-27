@@ -60,7 +60,13 @@ fmt-lint: ## Terraform fmt lint
 .PHONY: install-provider
 install-provider: ## Installs Provider
 	@echo -e "\033[92m➜ $@ \033[0m"
-	@mkdir -p $(INSTALL_DIR)/.terraform.d/plugins
+	@mkdir -p $(TERRAFORM_PLUGIN_INSTALL_DIR)/.terraform.d/plugins
 	@mkdir -p $(ROOT_DIR)/vendor
 	curl -sfL https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.1/terraform-provider-libvirt-0.6.1+git.1578064534.db13b678.Ubuntu_18.04.amd64.tar.gz -o $(ROOT_DIR)/vendor/terraform-provider-libvirt.tar.gz
 	tar -C $(TERRAFORM_PLUGIN_INSTALL_DIR)/.terraform.d/plugins -xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt.tar.gz terraform-provider-libvirt
+
+.PHONY: docs
+docs: ## Generate module documentation
+	@echo -e "\033[92m➜ $@ \033[0m"
+	terraform-docs --sort-by-required markdown modules/vm > $(ROOT_DIR)/modules/vm/README.md
+	terraform-docs --sort-by-required markdown modules/net > $(ROOT_DIR)/modules/net/README.md

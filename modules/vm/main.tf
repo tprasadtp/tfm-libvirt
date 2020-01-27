@@ -45,8 +45,6 @@ data "template_file" "network_config" {
 
 # for more info about paramater check this out
 # https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
-# Use CloudInit to add our ssh-key to the instance
-# you can add also meta_data field
 resource "libvirt_cloudinit_disk" "cloudinit" {
   name           = format("%s-cloudinit.iso", var.domain)
   user_data      = data.template_file.user_data.rendered

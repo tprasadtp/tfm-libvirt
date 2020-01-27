@@ -2,8 +2,7 @@
 on:
   push:
     branches:
-      - master
-      - stable
+      - "**"
     paths-ignore:
       - ".gitignore"
       - ".envrc"
@@ -21,33 +20,58 @@ jobs:
     strategy:
       matrix:
         tfv: [0.12.20]
-        modules: ['modules/net', 'modules/vm']
+    env:
+      LIBVIRT_DEFAULT_URI: "qemu:///system"
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
-      - name: Install
+      - name: Install Terraform
         run: |
-            make install-provider
+          mkdir -p vendor
+          echo "Getting Terraform"
+          curl -sSfL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o vendor/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+          echo "Getting Checksums"
+          curl -sSfL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_SHA256SUMS -o vendor/SHA256SUMS
+          echo "Verifying Checksums"
+          cd vendor
+          ls -alh
+          sha256sum --ignore-missing -c SHA256SUMS
+          echo "Installing Terraform"
+          sudo unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/
+          sudo chmod 755 /usr/local/bin/terraform
         env:
-          TERRAFORM_PLUGIN_INSTALL_DIR: "."
+          TERRAFORM_VERSION: ${{ matrix.tfv }}
+      - name: Install Provider
+        run: |
+            sudo sh -c "echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_18.04/ /' > /etc/apt/sources.list.d/systemsmanagement:terraform.list"
+            wget -nv https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_18.04/Release.key -O vendor/Release.key
+            sudo apt-key add - < vendor/Release.key
+            sudo apt-get update
+            sudo apt-get -qq -y install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+            echo "KVM Status"
+            echo "-----------"
+            # Because kvm-ok might return non zero we will make it drink some truth serum
+            sudo kvm-ok || true
+            # Daemon
+            echo "-----------"
+            echo "Starting Daemon"
+            sudo systemctl start libvirtd
+            echo "Status of Daemon"
+            sudo systemctl status libvirtd
+      - name: Validate Provider
+        run: |
+            # Terraform
+            echo "Terraform Details"
+            echo "-----------"
+            sudo -E -H terraform version
+            sudo -E -H terraform-provider-libvirt --version
+            # Link
+            echo "Symlink Plugin"
+            echo "-----------"
+            sudo mkdir -p ${HOME}/.terraform.d/plugins
+            sudo ln -s $(which terraform-provider-libvirt) ${HOME}/.terraform.d/plugins/terraform-provider-libvirt
       - name: 'Terraform Format'
-        uses: hashicorp/terraform-github-actions@master
-        with:
-          tf_actions_version: ${{ matrix.tfv }}
-          tf_actions_subcommand: 'fmt'
-          tf_actions_working_dir: ${{ matrix.modules }}
-          tf_actions_comment: false
-      - name: 'Terraform Init'
-        uses: hashicorp/terraform-github-actions@master
-        with:
-          tf_actions_version: ${{ matrix.tfv }}
-          tf_actions_subcommand: 'init'
-          tf_actions_working_dir: ${{ matrix.modules }}
-          tf_actions_comment: false
+        run: make fmt-lint
       - name: 'Terraform Validate'
-        uses: hashicorp/terraform-github-actions@master
-        with:
-          tf_actions_version: ${{ matrix.tfv }}
-          tf_actions_subcommand: 'validate'
-          tf_actions_working_dir: ${{ matrix.modules }}
-          tf_actions_comment: false
+        # MUST run as sudo
+        run: sudo -E make validate
