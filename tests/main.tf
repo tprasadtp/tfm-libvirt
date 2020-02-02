@@ -11,6 +11,7 @@ module "virtual_machine" {
 
   # Name of the VM
   domain_prefix  = "test"
+  network        = "test"
   user_data_path = "./user-data.cfg"
   vm_count       = 2
 }

@@ -41,6 +41,8 @@ validate: ## Terraform Validate
 	terraform validate $(ROOT_DIR)/modules/vm
 	terraform init $(ROOT_DIR)/modules/net
 	terraform validate $(ROOT_DIR)/modules/net
+	terraform init $(ROOT_DIR)/tests
+	terraform validate $(ROOT_DIR)/tests
 
 
 .PHONY: fmt
@@ -48,6 +50,7 @@ fmt: ## Terraform fmt
 	@echo -e "\033[92m➜ $@ \033[0m"
 	terraform fmt $(ROOT_DIR)/modules/vm
 	terraform fmt $(ROOT_DIR)/modules/net
+	terraform fmt $(ROOT_DIR)/tests
 
 
 .PHONY: fmt-lint
@@ -55,6 +58,7 @@ fmt-lint: ## Terraform fmt lint
 	@echo -e "\033[92m➜ $@ \033[0m"
 	terraform fmt -check $(ROOT_DIR)/modules/vm
 	terraform fmt -check $(ROOT_DIR)/modules/net
+	terraform fmt -check $(ROOT_DIR)/modules/tests
 
 
 .PHONY: install-provider
