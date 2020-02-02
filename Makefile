@@ -58,7 +58,7 @@ fmt-lint: ## Terraform fmt lint
 	@echo -e "\033[92m➜ $@ \033[0m"
 	terraform fmt -check $(ROOT_DIR)/modules/vm
 	terraform fmt -check $(ROOT_DIR)/modules/net
-	terraform fmt -check $(ROOT_DIR)/modules/tests
+	terraform fmt -check $(ROOT_DIR)/tests
 
 
 .PHONY: install-provider
