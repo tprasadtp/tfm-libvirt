@@ -83,13 +83,13 @@ jobs:
           echo "-----------"
           sudo apt-get install -y mkisofs python3-pip python3-setuptools python3-libvirt python3-lxml
           echo "-----------"
-          sudo -E -H terraform init
-          sudo -E -H terraform apply -auto-approve
+          sudo -E terraform init
+          sudo -E terraform apply -auto-approve
       - name: Test [Assert]
         run: |
           sudo pip3 install -r tests/requirements.txt
-          sudo make assert
+          sudo -H -E make assert
       - name: Test [Destroy]
         run: |
           cd tests
-          terraform destroy -force
+          sudo -E terraform destroy -force
