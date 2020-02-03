@@ -78,7 +78,7 @@ jobs:
       - name: Test [Create]
         # We need -E and -H as plugins are installed as normal user
         run: |
-          cd test
+          cd tests
           echo "Installing system Dependencies"
           echo "-----------"
           sudo apt-get install -y mkisofs python3-pip python3-setuptools python3-libvirt python3-lxml
