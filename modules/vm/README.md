@@ -9,14 +9,15 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| cloudimage\_pool | Cloud Image Pool. This is where downloaded cloud images will be stored | `any` | n/a | yes |
-| domain | Ubuntu domain Name | `string` | n/a | yes |
+| cloud\_image\_url | Cloud Image URL | `string` | n/a | yes |
+| domain\_prefix | Domain Prefix. If count is > 1, -{count} is appended to the domain created. Seperator can be configured with variable. | `string` | n/a | yes |
 | network\_config\_path | Path to Network config | `string` | n/a | yes |
 | user\_data\_path | Path to User data config | `string` | n/a | yes |
 | autostart | Autostart the Domain | `bool` | `false` | no |
-| cloudimage\_url | Cloud Image URL | `string` | `"https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"` | no |
+| cloud\_image\_pool | Pool to use downloaded cloud images | `string` | `"default"` | no |
 | cpu\_count | CPUs to allocate to VM | `number` | `1` | no |
-| disk\_size | Root FS disk size | `number` | `20` | no |
+| disk\_size | Root FS disk size in GB. Please do not specify it in bytes! | `number` | `20` | no |
+| domain\_prefix\_index\_seperator | Charachter to be used for seperating domain prefix and index. Only applies if count is > 1 | `string` | `"-"` | no |
 | memory\_size | Memory size in MiB | `number` | `512` | no |
 | network | Network Name to attach VM | `string` | `"default"` | no |
 | pool | Pool for Disks | `string` | `"default"` | no |
@@ -26,5 +27,5 @@
 
 | Name | Description |
 |------|-------------|
-| vm\_ip\_address | Primary IP Addresses of machine(s) |
+| ip | Primary IP Addresses of machine(s) |
 

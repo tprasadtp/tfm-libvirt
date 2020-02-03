@@ -1,13 +1,17 @@
-variable "cloudimage_url" {
+variable "cloud_image_url" {
   type        = string
   description = "Cloud Image URL"
-  default     = "https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
 }
 
 variable "disk_size" {
   type        = number
   description = "Root FS disk size in GB. Please do not specify it in bytes!"
   default     = 20
+
+  validation {
+    condition     = var.disk_size < 10240
+    error_message = "RootFS sixe MUST be in GB. It looks like you ar using it in other units."
+  }
 }
 
 variable "network" {
@@ -24,13 +28,18 @@ variable "pool" {
 
 variable "domain_prefix" {
   type        = string
-  description = "Domain Prefix. If count is > 1, -{count} is appended to the domain created."
+  description = "Domain Prefix. If count is > 1, -{count} is appended to the domain created. Seperator can be configured with variable."
 }
 
 variable "cpu_count" {
   type        = number
   description = "CPUs to allocate to VM"
   default     = 1
+
+  validation {
+    condition     = var.cpu_count >= 1
+    error_message = "Number of vCPUs to allocate MUST be positive integer."
+  }
 }
 
 variable "memory_size" {
@@ -66,4 +75,15 @@ variable "cloud_image_pool" {
   description = "Pool to use downloaded cloud images"
   default     = "default"
   type        = string
+}
+
+variable "domain_prefix_index_seperator" {
+  description = "Charachter to be used for seperating domain prefix and index. Only applies if count is > 1"
+  type        = string
+  default     = "-"
+
+  validation {
+    condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
+    error_message = "The seperator can be either empty, hyphen or underscore."
+  }
 }

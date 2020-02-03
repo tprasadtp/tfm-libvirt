@@ -50,3 +50,7 @@ override.tf.json
 
 vendor/
 .terraform.d/
+.vscode/
+.envrc
+
+.venv/

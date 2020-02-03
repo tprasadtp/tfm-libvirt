@@ -60,6 +60,16 @@ fmt-lint: ## Terraform fmt lint
 	terraform fmt -check $(ROOT_DIR)/modules/net
 	terraform fmt -check $(ROOT_DIR)/tests
 
+.PHONY: assert
+assert: ## Assert Tests
+	@echo -e "\033[92m➜ $@ \033[0m"
+	(cd tests && ansible-playbook assert.yml)
+
+.PHONY: install-assert-deps
+install-assert-deps: ## Install assert python deps
+	@echo -e "\033[92m➜ $@ \033[0m"
+	pip3 install --user -r tests/requirements.txt
+
 
 .PHONY: install-provider
 install-provider: ## Installs Provider
@@ -72,5 +82,5 @@ install-provider: ## Installs Provider
 .PHONY: docs
 docs: ## Generate module documentation
 	@echo -e "\033[92m➜ $@ \033[0m"
-	terraform-docs --sort-by-required markdown modules/vm > $(ROOT_DIR)/modules/vm/README.md
-	terraform-docs --sort-by-required markdown modules/net > $(ROOT_DIR)/modules/net/README.md
+	terraform-docs --sort-by-required markdown $(ROOT_DIR)/modules/vm > $(ROOT_DIR)/modules/vm/README.md
+	terraform-docs --sort-by-required markdown $(ROOT_DIR)/modules/net > $(ROOT_DIR)/modules/net/README.md

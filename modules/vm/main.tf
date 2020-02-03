@@ -3,15 +3,15 @@ resource "libvirt_volume" "base" {
   pool = var.cloud_image_pool
 
   // Get the URL and use the image name as volume name
-  name = element(split("/", var.cloudimage_url), length(split("/", var.cloudimage_url)) - 1)
+  name = element(split("/", var.cloud_image_url), length(split("/", var.cloud_image_url)) - 1)
 
   #"https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
-  source = var.cloudimage_url
+  source = var.cloud_image_url
 }
 
 # Main root Volume
 resource "libvirt_volume" "volume" {
-  name           = var.vm_count > 1 ? format("%s-%d.qcow2", var.domain_prefix, count.index + 1) : var.domain_prefix
+  name           = var.vm_count > 1 ? format("%s%s%d.qcow2", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
   base_volume_id = libvirt_volume.base.id
   pool           = var.pool
   size           = var.disk_size * 1024 * 1024 * 1024
@@ -33,7 +33,7 @@ data "template_file" "user_data" {
 # https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count = var.vm_count
-  name  = var.vm_count > 1 ? format("%s-%d.iso", var.domain_prefix, count.index + 1) : var.domain_prefix
+  name  = var.vm_count > 1 ? format("%s%s%d.iso", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
   // user_data      = templatefile(var.user_data_path, { instance_name = format("%s-%d", var.domain_prefix, count.index+1)})
   user_data = element(data.template_file.user_data.*.rendered, count.index)
   pool      = var.pool
@@ -43,7 +43,7 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
 resource "libvirt_domain" "domain" {
 
   count  = var.vm_count
-  name   = var.vm_count > 1 ? format("%s-%d", var.domain_prefix, count.index + 1) : var.domain_prefix
+  name   = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
   memory = var.memory_size
   vcpu   = var.cpu_count
 
