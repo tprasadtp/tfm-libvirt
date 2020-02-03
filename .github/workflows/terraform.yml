@@ -75,6 +75,11 @@ jobs:
       - name: 'Terraform Validate'
         # MUST run as sudo
         run: sudo -E make validate
+      - name: Start Default Pool
+        run: |
+          sudo mkdir -p /var/lib/libvirt/images
+          sudo virsh pool-define tests/default-pool.xml
+          sudo virsh pool-start default
       - name: Test [Create]
         # We need -E and -H as plugins are installed as normal user
         run: |
