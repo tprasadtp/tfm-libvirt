@@ -61,8 +61,10 @@ jobs:
             sudo kvm-ok || true
             # Daemon
             echo "-----------"
-            echo "Starting Daemon"
-            sudo systemctl restart libvirtd
+            echo "Restarting Daemon"
+            sudo systemctl stop libvirt-bin
+            sudo systemctl stop libvirt-bin.socket
+            sudo systemctl start libvirt-bin
             echo "Status of Daemon"
             sudo systemctl status libvirtd
             # Host status
