@@ -43,16 +43,18 @@ jobs:
           sudo chmod 755 /usr/local/bin/terraform
         env:
           TERRAFORM_VERSION: ${{ matrix.tfv }}
-      - name: Install Provider
+      - name: Permission fixer
+        run: |
+            sudo mkdir -p /etc/libvirt
+            sudo chmod 755 /etc/libvirt
+            sudo echo 'security_driver="none"' | tee /etc/libvirt/qemu.conf
+      - name: Install Provider & Packages
         run: |
             sudo sh -c "echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_18.04/ /' > /etc/apt/sources.list.d/systemsmanagement:terraform.list"
             wget -nv https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_18.04/Release.key -O vendor/Release.key
             sudo apt-key add - < vendor/Release.key
             sudo apt-get update
             sudo apt-get -qq -y install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
-      - name: Permission fixer
-        run: |
-            sudo sed -i 's/^security_driver\s*=\s*.*$/security_driver="none"/g' /etc/libvirt/qemu.conf
       - name: Platform Info
         run: |
             echo "KVM Status"
@@ -62,9 +64,7 @@ jobs:
             # Daemon
             echo "-----------"
             echo "Restarting Daemon"
-            sudo systemctl stop libvirt-bin
-            sudo systemctl stop libvirt-bin.socket
-            sudo systemctl start libvirt-bin
+            sudo systemctl reload libvirtd
             echo "Status of Daemon"
             sudo systemctl status libvirtd
             # Host status
