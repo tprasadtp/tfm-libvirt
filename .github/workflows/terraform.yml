@@ -47,7 +47,7 @@ jobs:
         run: |
             sudo mkdir -p /etc/libvirt
             sudo chmod 755 /etc/libvirt
-            sudo echo 'security_driver="none"' | tee /etc/libvirt/qemu.conf
+            echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
       - name: Install Provider & Packages
         run: |
             sudo sh -c "echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_18.04/ /' > /etc/apt/sources.list.d/systemsmanagement:terraform.list"
