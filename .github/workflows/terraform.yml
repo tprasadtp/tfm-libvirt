@@ -22,6 +22,8 @@ jobs:
         tfv: [0.12.20]
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
+      # UNDOC:: Force use qemu on actions
+      TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE: "qemu"
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
@@ -48,6 +50,8 @@ jobs:
             sudo apt-key add - < vendor/Release.key
             sudo apt-get update
             sudo apt-get -qq -y install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+      - name: Platform Info
+        run: |
             echo "KVM Status"
             echo "-----------"
             # Because kvm-ok might return non zero we will make it drink some truth serum
@@ -58,6 +62,10 @@ jobs:
             sudo systemctl start libvirtd
             echo "Status of Daemon"
             sudo systemctl status libvirtd
+            # Host status
+            echo "Host Validation"
+            echo "-----------"
+            sudo -E virt-host-validate || true
       - name: Validate Provider
         run: |
             # Terraform
@@ -78,12 +86,12 @@ jobs:
       - name: Start Default Pool
         run: |
           sudo mkdir -p /var/lib/libvirt/images
-          sudo virsh pool-define tests/default-pool.xml
+          sudo virsh pool-define test/default-pool.xml
           sudo virsh pool-start default
       - name: Test [Create]
         # We need -E and -H as plugins are installed as normal user
         run: |
-          cd tests
+          cd test/ubuntu
           echo "Installing system Dependencies"
           echo "-----------"
           sudo apt-get install -y mkisofs python3-pip python3-setuptools python3-libvirt python3-lxml
@@ -92,9 +100,9 @@ jobs:
           sudo -E terraform apply -auto-approve
       - name: Test [Assert]
         run: |
-          sudo pip3 install -r tests/requirements.txt
-          sudo -H -E make assert
+          sudo pip3 install -r test/requirements.txt
+          sudo -H -E make assert-ubuntu
       - name: Test [Destroy]
         run: |
-          cd tests
+          cd test
           sudo -E terraform destroy -force

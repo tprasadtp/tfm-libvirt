@@ -1,13 +1,13 @@
 module "vnet" {
-  source              = "../modules/net"
-  network_name        = "test"
-  network_domain_name = "test.kvm"
-  network_dhcp_subnet = "192.168.127.0/24"
+  source      = "../../modules/net"
+  name        = "test"
+  domain_name = "test.kvm"
+  dhcp_subnet = "192.168.127.0/24"
 }
 
 
 module "virtual_machine" {
-  source = "../modules/vm"
+  source = "../../modules/vm"
 
   # Name of the VM
   cloud_image_url = "https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"

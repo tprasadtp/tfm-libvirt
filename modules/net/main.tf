@@ -1,15 +1,18 @@
 resource "libvirt_network" "net" {
   # the name used by libvirt
-  name = var.network_name
+  name = var.name
 
   # Allowed: "nat" (default), "none", "route", "bridge"
   mode = "nat"
 
   # The domain used by the DNS server in this network
-  domain = var.network_domain_name
+  domain = var.domain_name
 
   # DHHCP Sebnets
-  addresses = [var.network_dhcp_subnet]
+  addresses = [var.dhcp_subnet]
+
+  # Auto start
+  autostart = var.autostart
 
   # (Optional) DNS configuration
   dns {

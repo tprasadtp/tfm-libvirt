@@ -41,29 +41,31 @@ validate: ## Terraform Validate
 	terraform validate $(ROOT_DIR)/modules/vm
 	terraform init $(ROOT_DIR)/modules/net
 	terraform validate $(ROOT_DIR)/modules/net
-	terraform init $(ROOT_DIR)/tests
-	terraform validate $(ROOT_DIR)/tests
+	terraform init $(ROOT_DIR)/test/ubuntu
+	terraform validate $(ROOT_DIR)/test/ubuntu
 
 
 .PHONY: fmt
 fmt: ## Terraform fmt
 	@echo -e "\033[92m➜ $@ \033[0m"
-	terraform fmt $(ROOT_DIR)/modules/vm
-	terraform fmt $(ROOT_DIR)/modules/net
-	terraform fmt $(ROOT_DIR)/tests
+	terraform fmt -recursive $(ROOT_DIR)
 
 
 .PHONY: fmt-lint
 fmt-lint: ## Terraform fmt lint
 	@echo -e "\033[92m➜ $@ \033[0m"
-	terraform fmt -check $(ROOT_DIR)/modules/vm
-	terraform fmt -check $(ROOT_DIR)/modules/net
-	terraform fmt -check $(ROOT_DIR)/tests
+	terraform fmt -check -recursive -diff $(ROOT_DIR)
 
-.PHONY: assert
-assert: ## Assert Tests
+.PHONY: assert-ubuntu
+assert-ubuntu: ## Assert Ubuntu+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
-	(cd tests && ansible-playbook assert.yml)
+	(cd test && ansible-playbook ubuntu/assert.yml)
+
+.PHONY: assert-centos
+assert-centos: ## Assert CentOS+cloud-init Tests
+	@echo -e "\033[92m➜ $@ \033[0m"
+	(cd test && ansible-playbook centos/assert.yml)
+
 
 .PHONY: install-assert-deps
 install-assert-deps: ## Install assert python deps

@@ -25,7 +25,7 @@ data "template_file" "user_data" {
   count    = var.vm_count
   template = file(var.user_data_path)
   vars = {
-    hostname = format("%s-%d", var.domain_prefix, count.index + 1)
+    hostname = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
   }
 }
 
