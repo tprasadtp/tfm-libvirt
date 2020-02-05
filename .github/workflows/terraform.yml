@@ -54,7 +54,7 @@ jobs:
             wget -nv https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_18.04/Release.key -O vendor/Release.key
             sudo apt-key add - < vendor/Release.key
             sudo apt-get update
-            sudo apt-get -qq -y install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+            sudo apt-get -qq --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
       - name: Platform Info
         run: |
             echo "KVM Status"
