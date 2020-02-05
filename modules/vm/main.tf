@@ -74,10 +74,6 @@ resource "libvirt_domain" "domain" {
     volume_id = element(libvirt_volume.volume.*.id, count.index)
   }
 
-  cpu = {
-    mode = "host-passthrough"
-  }
-
   graphics {
     type        = "spice"
     listen_type = "address"
