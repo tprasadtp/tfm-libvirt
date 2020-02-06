@@ -16,12 +16,14 @@
 | autostart | Autostart the Domain | `bool` | `false` | no |
 | cloud\_image\_pool | Pool to use downloaded cloud images | `string` | `"default"` | no |
 | cpu\_count | CPUs to allocate to VM | `number` | `1` | no |
+| cpu\_model\_host | Set CPU Model to Host | `bool` | `true` | no |
 | disk\_size | Root FS disk size in GB. Please do not specify it in bytes! | `number` | `20` | no |
 | domain\_prefix\_index\_seperator | Charachter to be used for seperating domain prefix and index. Only applies if count is > 1 | `string` | `"-"` | no |
 | memory\_size | Memory size in MiB | `number` | `512` | no |
 | network | Network Name to attach VM | `string` | `"default"` | no |
 | pool | Pool for Disks | `string` | `"default"` | no |
 | vm\_count | Number of VM Instances to create | `number` | `1` | no |
+| wait\_for\_lease | Wait until the network interface gets a DHCP lease from libvirt | `bool` | `true` | no |
 
 ## Outputs
 

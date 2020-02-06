@@ -20,6 +20,12 @@ variable "network" {
   default     = "default"
 }
 
+variable "wait_for_lease" {
+  type        = bool
+  description = "Wait until the network interface gets a DHCP lease from libvirt"
+  default     = true
+}
+
 variable "pool" {
   type        = string
   description = "Pool for Disks"
@@ -41,6 +47,13 @@ variable "cpu_count" {
   //   error_message = "Number of vCPUs to allocate MUST be positive integer."
   // }
 }
+
+variable "cpu_model_host" {
+  type        = bool
+  default     = true
+  description = "Set CPU Model to Host"
+}
+
 
 variable "memory_size" {
   type        = number

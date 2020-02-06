@@ -15,6 +15,7 @@ module "virtual_machine" {
   network         = "test"
   user_data_path  = "./user-data.cfg"
   vm_count        = 2
+  cpu_model_host  = false
   # ansible does not like hyphens in its dicts.
   # this just sets seperator to "" to avoid it.
   domain_prefix_index_seperator = ""

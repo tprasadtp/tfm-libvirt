@@ -3,7 +3,7 @@ resource "libvirt_volume" "base" {
   pool = var.cloud_image_pool
 
   // Get the URL and use the image name as volume name
-  name = element(split("/", var.cloud_image_url), length(split("/", var.cloud_image_url)) - 1)
+  name = format("%s-%s", var.domain_prefix, element(split("/", var.cloud_image_url), length(split("/", var.cloud_image_url)) - 1))
 
   #"https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
   source = var.cloud_image_url
@@ -47,11 +47,15 @@ resource "libvirt_domain" "domain" {
   memory = var.memory_size
   vcpu   = var.cpu_count
 
+  cpu = {
+    mode = var.cpu_model_host == true ? "host-model" : null
+  }
+
   cloudinit = element(libvirt_cloudinit_disk.cloudinit.*.id, count.index)
 
   network_interface {
     network_name   = var.network
-    wait_for_lease = true
+    wait_for_lease = var.wait_for_lease
 
   }
 
