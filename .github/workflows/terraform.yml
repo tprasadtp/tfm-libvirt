@@ -22,6 +22,8 @@ jobs:
         tfv: [0.12.20]
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
+      # UNDOC:: Force use qemu on actions
+      TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE: "qemu"
     steps:
       - name: 'Checkout'
         uses: actions/checkout@master
@@ -41,23 +43,34 @@ jobs:
           sudo chmod 755 /usr/local/bin/terraform
         env:
           TERRAFORM_VERSION: ${{ matrix.tfv }}
-      - name: Install Provider
+      - name: Permission fixer
+        run: |
+            sudo mkdir -p /etc/libvirt
+            sudo chmod 755 /etc/libvirt
+            echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
+      - name: Install Provider & Packages
         run: |
             sudo sh -c "echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_18.04/ /' > /etc/apt/sources.list.d/systemsmanagement:terraform.list"
             wget -nv https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_18.04/Release.key -O vendor/Release.key
             sudo apt-key add - < vendor/Release.key
             sudo apt-get update
-            sudo apt-get -qq -y install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+            sudo apt-get -qq --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+      - name: Platform Info
+        run: |
             echo "KVM Status"
             echo "-----------"
             # Because kvm-ok might return non zero we will make it drink some truth serum
             sudo kvm-ok || true
             # Daemon
             echo "-----------"
-            echo "Starting Daemon"
-            sudo systemctl start libvirtd
+            echo "Restarting Daemon"
+            sudo systemctl reload libvirtd
             echo "Status of Daemon"
             sudo systemctl status libvirtd
+            # Host status
+            echo "Host Validation"
+            echo "-----------"
+            sudo -E virt-host-validate || true
       - name: Validate Provider
         run: |
             # Terraform
@@ -75,3 +88,26 @@ jobs:
       - name: 'Terraform Validate'
         # MUST run as sudo
         run: sudo -E make validate
+      - name: Start Default Pool
+        run: |
+          sudo mkdir -p /var/lib/libvirt/images
+          sudo virsh pool-define test/default-pool.xml
+          sudo virsh pool-start default
+      - name: Test [Create]
+        # We need -E and -H as plugins are installed as normal user
+        run: |
+          cd test/ubuntu
+          echo "Installing system Dependencies"
+          echo "-----------"
+          sudo apt-get install -y mkisofs python3-pip python3-setuptools python3-libvirt python3-lxml
+          echo "-----------"
+          sudo -E terraform init
+          sudo -E terraform apply -auto-approve
+      - name: Test [Assert]
+        run: |
+          sudo pip3 install -r test/requirements.txt
+          sudo -H -E make assert-ubuntu
+      - name: Test [Destroy]
+        run: |
+          cd test
+          sudo -E terraform destroy -force

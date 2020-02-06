@@ -8,16 +8,22 @@ variable "disk_size" {
   description = "Root FS disk size in GB. Please do not specify it in bytes!"
   default     = 20
 
-  validation {
-    condition     = var.disk_size < 10240
-    error_message = "RootFS sixe MUST be in GB. It looks like you ar using it in other units."
-  }
+  // validation {
+  //   condition     = var.disk_size < 10240
+  //   error_message = "RootFS sixe MUST be in GB. It looks like you ar using it in other units."
+  // }
 }
 
 variable "network" {
   type        = string
   description = "Network Name to attach VM"
   default     = "default"
+}
+
+variable "wait_for_lease" {
+  type        = bool
+  description = "Wait until the network interface gets a DHCP lease from libvirt"
+  default     = true
 }
 
 variable "pool" {
@@ -36,11 +42,18 @@ variable "cpu_count" {
   description = "CPUs to allocate to VM"
   default     = 1
 
-  validation {
-    condition     = var.cpu_count >= 1
-    error_message = "Number of vCPUs to allocate MUST be positive integer."
-  }
+  // validation {
+  //   condition     = var.cpu_count >= 1
+  //   error_message = "Number of vCPUs to allocate MUST be positive integer."
+  // }
 }
+
+variable "cpu_model_host" {
+  type        = bool
+  default     = true
+  description = "Set CPU Model to Host"
+}
+
 
 variable "memory_size" {
   type        = number
@@ -82,8 +95,8 @@ variable "domain_prefix_index_seperator" {
   type        = string
   default     = "-"
 
-  validation {
-    condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
-    error_message = "The seperator can be either empty, hyphen or underscore."
-  }
+  // validation {
+  //   condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
+  //   error_message = "The seperator can be either empty, hyphen or underscore."
+  // }
 }

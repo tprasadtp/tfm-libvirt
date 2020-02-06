@@ -20,13 +20,9 @@ with [libvirt][terraform-libvirt] provider.
 
 ## Usage
 
-Just like use it any other terraform module.
+1. `modules/net` - [Creates a Network](./modules/net/README.md)
+1. `modules/vm` - [Creates VM(s)](./modules/vm/README.md)
 
-```console
-terrafom init
-terraform plan
-terraform apply
-```
 
 > It is recommended to add this repo as a submodule
 > and use the terraform modules from modules folder.

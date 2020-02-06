@@ -1,15 +1,21 @@
 
-variable "network_name" {
+variable "name" {
   type        = string
   description = "Name of the Network"
 }
 
-variable "network_domain_name" {
+variable "domain_name" {
   type        = string
   description = "Network Domain Name"
 }
 
-variable "network_dhcp_subnet" {
+variable "dhcp_subnet" {
   type        = string
   description = "DHCP Subnet"
+}
+
+variable "autostart" {
+  type        = bool
+  default     = false
+  description = "Auto Start Network after boot"
 }

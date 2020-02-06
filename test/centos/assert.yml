@@ -1,0 +1,48 @@
+---
+- name: Validate
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    # - name: Gather Net Facts
+    #   virt_net:
+    #     name: test
+    #     command: info
+    #   register: lv_netinfo
+    #   tags:
+    #     - net
+    # - debug:
+    #     msg: "{{ lv_netinfo }}"
+    #     verbosity: 2
+    #   tags:
+    #     - net
+    # - name: Assert | Network
+    #   assert:
+    #     that:
+    #       - lv_netinfo.networks.centos.domain == "centos.kvm"
+    #       - lv_netinfo.networks.test.state == "active"
+    #       - lv_netinfo.networks.test.forward_mode == "nat"
+    #       - lv_netinfo.networks.test.autostart == "yes"
+    #     success_msg: "Network test (NAT) is up and running"
+    #     fail_msg: "Network test (NAT) is not up and running"
+    #   tags:
+    #     - assert
+    #     - net
+    - name: Gather VM Info
+      virt:
+        command: info
+      register: lv_viminfo
+      tags:
+        - vm
+    - name: Assert | VMs ar Running
+      assert:
+        that:
+          - lv_viminfo.centos.memory == "524288"
+          - lv_viminfo.centos.state == "running"
+          - lv_viminfo.centos.nrVirtCpu == 1
+          - lv_viminfo.centos.memory == "524288"
+          - lv_viminfo.centos.state == "running"
+          - lv_viminfo.centos.nrVirtCpu == 1
+        success_msg: "Centos VM is up and running"
+        fail_msg: "One or more VMs failed to run with right config"
+      tags:
+        - vm

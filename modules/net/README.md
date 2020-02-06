@@ -8,9 +8,10 @@
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| network\_dhcp\_subnet | DHCP Subnet | `string` | n/a | yes |
-| network\_domain\_name | Network Domain Name | `string` | n/a | yes |
-| network\_name | Name of the Network | `string` | n/a | yes |
+| dhcp\_subnet | DHCP Subnet | `string` | n/a | yes |
+| domain\_name | Network Domain Name | `string` | n/a | yes |
+| name | Name of the Network | `string` | n/a | yes |
+| autostart | Auto Start Network after boot | `bool` | `false` | no |
 
 ## Outputs
 
