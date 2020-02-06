@@ -109,5 +109,5 @@ jobs:
           sudo -H -E make assert-ubuntu
       - name: Test [Destroy]
         run: |
-          cd test
+          cd test/ubuntu
           sudo -E terraform destroy -force
