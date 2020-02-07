@@ -3,6 +3,16 @@ variable "cloud_image_url" {
   description = "Cloud Image URL"
 }
 
+variable "cloud_image_format" {
+  type        = string
+  description = "Cloud Image Format"
+
+  // validation {
+  //   condition     = var.cloud_image_format != "raw" || var.cloud_image_format != "qcow2"
+  //   error_message = "Image format can be qcow2 or raw."
+  // }
+}
+
 variable "disk_size" {
   type        = number
   description = "Root FS disk size in GB. Please do not specify it in bytes!"

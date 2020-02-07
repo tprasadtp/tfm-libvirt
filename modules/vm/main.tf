@@ -7,11 +7,22 @@ resource "libvirt_volume" "base" {
 
   #"https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
   source = var.cloud_image_url
+
+  format = var.cloud_image_format
 }
+
+// define names to avoid strange errors
+data "null_data_source" "resource_names" {
+  count = var.vm_count
+  inputs = {
+    hostnames = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : format("%s", var.domain_prefix)
+  }
+}
+
 
 # Main root Volume
 resource "libvirt_volume" "volume" {
-  name           = var.vm_count > 1 ? format("%s%s%d.qcow2", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
+  name           = format("%s%s%d.qcow2", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
   base_volume_id = libvirt_volume.base.id
   pool           = var.pool
   size           = var.disk_size * 1024 * 1024 * 1024
@@ -22,19 +33,19 @@ resource "libvirt_volume" "volume" {
 
 # Cloud init config
 data "template_file" "user_data" {
-  count    = var.vm_count
+  count = var.vm_count
+  // count = 2
   template = file(var.user_data_path)
   vars = {
-    hostname = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
+    hostname = element(data.null_data_source.resource_names.*.outputs.hostnames, count.index)
   }
 }
 
-# for more info about paramater check this out
+// # for more info about paramater check this out
 # https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
 resource "libvirt_cloudinit_disk" "cloudinit" {
-  count = var.vm_count
-  name  = var.vm_count > 1 ? format("%s%s%d.iso", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
-  // user_data      = templatefile(var.user_data_path, { instance_name = format("%s-%d", var.domain_prefix, count.index+1)})
+  count     = var.vm_count
+  name      = format("%s%s%d.cloudinit.iso", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
   user_data = element(data.template_file.user_data.*.rendered, count.index)
   pool      = var.pool
 }
@@ -43,7 +54,7 @@ resource "libvirt_cloudinit_disk" "cloudinit" {
 resource "libvirt_domain" "domain" {
 
   count  = var.vm_count
-  name   = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : var.domain_prefix
+  name   = format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
   memory = var.memory_size
   vcpu   = var.cpu_count
 
@@ -56,7 +67,6 @@ resource "libvirt_domain" "domain" {
   network_interface {
     network_name   = var.network
     wait_for_lease = var.wait_for_lease
-
   }
 
   # IMPORTANT: this is a known bug on cloud images, since they expect a console

@@ -36,12 +36,9 @@
     - name: Assert | VMs ar Running
       assert:
         that:
-          - lv_viminfo.centos.memory == "524288"
-          - lv_viminfo.centos.state == "running"
-          - lv_viminfo.centos.nrVirtCpu == 1
-          - lv_viminfo.centos.memory == "524288"
-          - lv_viminfo.centos.state == "running"
-          - lv_viminfo.centos.nrVirtCpu == 1
+          - lv_viminfo.centos1.memory == "524288"
+          - lv_viminfo.centos1.state == "running"
+          - lv_viminfo.centos1.nrVirtCpu == 1
         success_msg: "Centos VM is up and running"
         fail_msg: "One or more VMs failed to run with right config"
       tags:

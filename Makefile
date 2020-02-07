@@ -61,6 +61,11 @@ assert-ubuntu: ## Assert Ubuntu+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
 	(cd test && ansible-playbook ubuntu/assert.yml)
 
+.PHONY: assert-centos
+assert-centos: ## Assert Centos+cloud-init Tests
+	@echo -e "\033[92m➜ $@ \033[0m"
+	(cd test && ansible-playbook centos/assert.yml)
+
 .PHONY: install-assert-deps
 install-assert-deps: ## Install assert python deps
 	@echo -e "\033[92m➜ $@ \033[0m"

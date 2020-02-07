@@ -3,12 +3,14 @@
 | Name | Version |
 |------|---------|
 | libvirt | n/a |
+| null | n/a |
 | template | n/a |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
+| cloud\_image\_format | Cloud Image Format | `string` | n/a | yes |
 | cloud\_image\_url | Cloud Image URL | `string` | n/a | yes |
 | domain\_prefix | Domain Prefix. If count is > 1, -{count} is appended to the domain created. Seperator can be configured with variable. | `string` | n/a | yes |
 | network\_config\_path | Path to Network config | `string` | n/a | yes |
@@ -29,5 +31,8 @@
 
 | Name | Description |
 |------|-------------|
-| ip | Primary IP Addresses of machine(s) |
+| cloudinit\_volumes | Name(s) of cloudinit disk(s) in the pool specified |
+| domain\_volumes | Name(s) of COW volume(s) for VM(s), in the pool specified |
+| hostnames | Hostname(s) as seen by cloudinit |
+| ips | Primary IP Addresses of machine(s) |
 
