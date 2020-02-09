@@ -24,10 +24,22 @@ variable "disk_size" {
   // }
 }
 
-variable "network" {
+variable "network_name" {
   type        = string
   description = "Network Name to attach VM"
   default     = "default"
+}
+
+variable "vm_addresses" {
+  type        = list(string)
+  description = "List of addresses to assing to VMs. These MUST be in the network. If you wish to create multiple VMs, but only few with specified IP, import this module twice and specifu vm-address in one of them."
+  default     = null
+
+  // check if length is same as count
+  // validation {
+  //   condition     = var.vm_addresses == null || length(var.vm_addresses) == var.vm_count
+  //   error_message = "Invalid length when not null. List should be as long as number of VMs to create."
+  // }
 }
 
 variable "wait_for_lease" {
@@ -44,7 +56,7 @@ variable "pool" {
 
 variable "domain_prefix" {
   type        = string
-  description = "Domain Prefix. If count is > 1, -{count} is appended to the domain created. Seperator can be configured with variable."
+  description = "Domain Prefix. Domains will be named {prefix}{seperator}{index}. Same pattern will be used for hostnames and volume names."
 }
 
 variable "cpu_count" {
@@ -55,6 +67,17 @@ variable "cpu_count" {
   // validation {
   //   condition     = var.cpu_count >= 1
   //   error_message = "Number of vCPUs to allocate MUST be positive integer."
+  // }
+}
+
+variable "architecture" {
+  type        = string
+  description = "Valid CPU architecture. If you set this to to non native architecture, You **MUST** set `cpu_model_host` to `false`"
+  default     = "x86_64"
+
+  // validation {
+  //   condition     = var.architecture == "x86_64" || var.architecture == "aarch64"
+  //   error_message = "We only Support 64 bit images(for now)."
   // }
 }
 
@@ -109,4 +132,16 @@ variable "domain_prefix_index_seperator" {
   //   condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
   //   error_message = "The seperator can be either empty, hyphen or underscore."
   // }
+}
+
+variable "enable_uefi" {
+  type        = bool
+  description = "Enable UEFI. You MUST have a supported system, suppoeted guest image and have `ovmf`(Debian.Ubuntu) or `edk2-ovmf`(RHEL/CentOS) package installed."
+  default     = false
+}
+
+variable "uefi_firmware_path" {
+  description = "Path to OVFM firmware. Only applies if `enable_uefi` is set to true. Default is only valid on Debian hosts. On CentOS hosts, use `/usr/share/OVMF/OVMF_CODE.secboot.fd`"
+  type        = string
+  default     = "/usr/share/OVMF/OVMF_CODE.fd"
 }

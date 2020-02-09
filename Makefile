@@ -5,6 +5,9 @@ SHELL := /bin/bash
 # Set install prefix if not set already
 TERRAFORM_PLUGIN_INSTALL_PREFIX ?= $(HOME)
 
+# Image download prefix
+CLOUD_IMAGE_DOWNLOAD_PATH ?= $(HOME)/Public/ISO
+
 # Get directory of makefile without trailing slash
 ROOT_DIR := $(patsubst %/, %, $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 
@@ -85,3 +88,31 @@ docs: ## Generate module documentation
 	@echo -e "\033[92m➜ $@ \033[0m"
 	terraform-docs --sort-by-required markdown $(ROOT_DIR)/modules/vm > $(ROOT_DIR)/modules/vm/README.md
 	terraform-docs --sort-by-required markdown $(ROOT_DIR)/modules/net > $(ROOT_DIR)/modules/net/README.md
+
+.PHONY: fetch-images
+fetch-image: fetch-image-ubuntu fetch-image-debian ## Fetches cloud images (Ubuntu-18.04, Debian-10 and CentOS-8)
+
+.PHONY: fetch-image-ubuntu
+fetch-image-ubuntu: ## Fetches cloud images (Ubuntu-18.04, Debian-10 and CentOS-8)
+	@echo -e "\033[92m➜ $@ \033[0m"
+	@echo -e "‣ Downloading Ubuntu 18.04 SHA512SUM \033[0m"
+	@mkdir -p $(CLOUD_IMAGE_DOWNLOAD_PATH)/Ubuntu-1804
+	@curl -sSfL http://cdimage.debian.org/cdimage/openstack/current-10/SHA512SUMS \
+		-o $(CLOUD_IMAGE_DOWNLOAD_PATH)/Ubuntu-1804/SHA512SUMS
+	@echo -e "‣ Downloading Debian 10 QCOW2 Image \033[0m"
+	@# curl -sSfL http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 \
+		-o $(CLOUD_IMAGE_DOWNLOAD_PATH)/Ubuntu-1804/debian-10-openstack-amd64.qcow2
+	@echo -e "‣ Verifying Checksum\033[0m"
+	@(cd $(CLOUD_IMAGE_DOWNLOAD_PATH)/Ubuntu-1804 && sha512sum -c --ignore-missing SHA512SUMS)
+
+.PHONY: fetch-image-debian
+fetch-image-debian: ## Fetches cloud images (Ubuntu-18.04, Debian-10 and CentOS-8)
+	@echo -e "\033[92m➜ $@ \033[0m"
+	@echo -e "‣ Downloading Debian 10 SHA512SUM \033[0m"
+	@mkdir -p $(CLOUD_IMAGE_DOWNLOAD_PATH)/Debian-10
+	@curl -sSfL http://cdimage.debian.org/cdimage/openstack/current-10/SHA512SUMS \
+		-o $(CLOUD_IMAGE_DOWNLOAD_PATH)/Debian-10/SHA512SUMS
+	@echo -e "‣ Downloading Debian 10 QCOW2 Image \033[0m"
+	@# curl -sSfL http://cdimage.debian.org/cdimage/openstack/current-10/debian-10-openstack-amd64.qcow2 -o $(CLOUD_IMAGE_DOWNLOAD_PATH)/Debian-10/debian-10-openstack-amd64.qcow2
+	@echo -e "‣ Verifying Checksum\033[0m"
+	@(cd $(CLOUD_IMAGE_DOWNLOAD_PATH)/Debian-10 && sha512sum -c --ignore-missing SHA512SUMS)

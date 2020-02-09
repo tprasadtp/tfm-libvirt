@@ -64,6 +64,7 @@ VMs use cloud images as its easier to configure them them using `cloud-init`.
 - [Fedora](https://alt.fedoraproject.org/cloud/)
 - [OpenSUSE](https://software.opensuse.org/distributions/leap#jeos-ports)
 - ArchLinux(You must build the qcow2 image or use openstack image if available)
+- ~~CoreOS~~ **REMOVED** [CoreOS will reach EoL soon](https://coreos.com/os/eol/).
 
 [terraform]: https://terraform.io
 [terraform-libvirt]: https://github.com/dmacvicar/terraform-provider-libvirt

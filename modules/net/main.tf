@@ -2,14 +2,17 @@ resource "libvirt_network" "net" {
   # the name used by libvirt
   name = var.name
 
-  # Allowed: "nat" (default), "none", "route", "bridge"
-  mode = "nat"
+  # Allowed: "nat" (default), "none", "bridge"
+  mode = var.mode
+
+  # If bridge specify bridge device
+  bridge = var.mode == "bridge" ? var.bridge_device : null
 
   # The domain used by the DNS server in this network
   domain = var.domain_name
 
-  # DHHCP Sebnets
-  addresses = [var.dhcp_subnet]
+  # DHCP Subnets
+  addresses = var.dhcp_subnets
 
   # Auto start
   autostart = var.autostart

@@ -54,3 +54,4 @@ vendor/
 .envrc
 
 .venv/
+terraform.auto.tfvars

@@ -3,7 +3,7 @@ output "ips" {
   description = "Primary IP Addresses of machine(s)"
 }
 
-output "cloudinit_volumes" {
+output "cloudinit_iso" {
   value       = libvirt_cloudinit_disk.cloudinit.*.name
   description = "Name(s) of cloudinit disk(s) in the pool specified"
 }
