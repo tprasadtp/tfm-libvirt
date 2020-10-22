@@ -59,13 +59,13 @@ variable "domain_prefix" {
   description = "Domain Prefix. Domains will be named {prefix}{seperator}{index}. Same pattern will be used for hostnames and volume names."
 }
 
-variable "cpu_count" {
+variable "vcpu" {
   type        = number
   description = "CPUs to allocate to VM"
   default     = 1
 
   validation {
-    condition     = var.cpu_count >= 1
+    condition     = var.vcpu >= 1
     error_message = "Number of vCPUs to allocate MUST be positive integer."
   }
 }
@@ -88,9 +88,9 @@ variable "cpu_model_host" {
 }
 
 
-variable "memory_size" {
+variable "vmem" {
   type        = number
-  description = "Memory size in MiB"
+  description = "Memory to allocate to VM in MiB"
   default     = 512
 }
 

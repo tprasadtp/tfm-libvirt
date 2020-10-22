@@ -59,18 +59,19 @@ fmt-lint: ## Terraform fmt lint
 	@echo -e "\033[92m➜ $@ \033[0m"
 	terraform fmt -check -recursive -diff $(ROOT_DIR)
 
-.PHONY: assert-ubuntu
-assert-ubuntu: ## Assert Ubuntu+cloud-init Tests
+.PHONY: test-ubuntu
+test-ubuntu: ## Test Ubuntu+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
 	cd $(ROOT_DIR)/test/ubuntu && terraform init && terraform apply -auto-approve
 	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/ubuntu/assert.yml
 	cd $(ROOT_DIR)/test/ubuntu && terraform destroy -force
 
-.PHONY: assert-centos
-assert-centos: ## Assert Centos+cloud-init Tests
+.PHONY: test-centos
+test-centos: ## Test Centos+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
+	cd $(ROOT_DIR)/test/centos && terraform init && terraform apply -auto-approve
 	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/centos/assert.yml
-
+	cd $(ROOT_DIR)/test/centos && terraform destroy -force
 
 .PHONY: install-provider
 install-provider: ## Installs Provider

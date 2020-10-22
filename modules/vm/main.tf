@@ -50,9 +50,9 @@ resource "libvirt_domain" "domain" {
 
   count  = var.vm_count
   name   = format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
-  memory = var.memory_size
+  memory = var.vmem
   arch   = var.architecture
-  vcpu   = var.cpu_count
+  vcpu   = var.vcpu
 
   cpu = {
     mode = var.cpu_model_host == true ? "host-model" : null

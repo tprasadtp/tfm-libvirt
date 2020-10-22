@@ -4,8 +4,8 @@ This repository contains terraform modules to quickly create `libvirt` VMs from 
 with [libvirt][terraform-libvirt] provider.
 
 [![TFM](https://github.com/tprasadtp/tfm-libvirt/workflows/terraform/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=terraform)
-![Terraform-Version](https://img.shields.io/badge/terraform-0.12.x-623CE4?logo=terraform)
-![libvirt-Version](https://img.shields.io/badge/provider--libvirt-0.6.1-623CE4?logo=terraform&logoColor=white)
+![Terraform-Version](https://img.shields.io/badge/terraform-0.13.x-623CE4?logo=terraform)
+![libvirt-Version](https://img.shields.io/badge/provider--libvirt-0.6.2-623CE4?logo=terraform&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 [![Labels](https://github.com/tprasadtp/tfm-libvirt/workflows/labels/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=labels)
 ![Analytics](https://ga-beacon.prasadt.com/UA-101760811-3/github/tfm-libvirt?pink&useReferer)
@@ -20,25 +20,26 @@ with [libvirt][terraform-libvirt] provider.
 
 ## Usage
 
-1. Download and unpack libvirt provider.
-1. `mkdir -p ~/.terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.2/linux_amd64/
+1. `make install-provider`
 1. `modules/net` - [Creates a Network](./modules/net/README.md)
 1. `modules/vm` - [Creates VM(s)](./modules/vm/README.md)
 
 ```hcl
 
 module "virtual_machine" {
-  source = "../../modules/vm"
+  source             = "../../modules/vm"
 
-  libvirt_uri     = "qemu+ssh://user@hostname/system"
-  cloud_image_url = "https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
+  cloud_image_url    = pathexpand("~cloudimg.img")
+  # This is needed!
   cloud_image_format = "raw"
-  domain_prefix      = "test"
-  // This file MUST be present and should be a valid cloudinit config
+
+  # cloudinit file!
   user_data_path     = "./user-data.cfg"
-  // Number of VMs to create
   vm_count           = 2
-  cpu_model_host     = false
+  vcpu               = 1
+  vmem             = 512
+
+  enable_uefi        = true
 }
 ```
 
