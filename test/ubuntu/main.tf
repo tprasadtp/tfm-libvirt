@@ -8,7 +8,7 @@ module "vnet" {
 
 module "virtual_machine" {
   source             = "../../modules/vm"
-  cloud_image_url    = pathexpand("~/Public/ISO/ubuntu-18.04-minimal-cloudimg-amd64.img")
+  cloud_image_url    = pathexpand("~/Virtual/installers/cloudimages/ubuntu-focal/focal-server-cloudimg-amd64.img")
   cloud_image_format = "raw"
   domain_prefix      = "test"
   network_name       = "test"
@@ -18,11 +18,7 @@ module "virtual_machine" {
   enable_uefi        = true
   # ansible does not like hyphens in its dicts.
   # this just sets seperator to "" to avoid it.
-  domain_prefix_index_seperator = ""
-}
-
-provider "libvirt" {
-  uri = "qemu:///system"
+  domain_prefix_index_seperator = "_"
 }
 
 output "ips" {

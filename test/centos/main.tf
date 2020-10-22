@@ -6,7 +6,7 @@ module "virtual_machine" {
   cloud_image_url    = pathexpand("~/Public/ISO/CentOS-8-GenericCloud-8.1.1911-20200113.3.x86_64.qcow2")
   cloud_image_format = "qcow2"
   domain_prefix      = "centos"
-  network_name            = "default"
+  network_name       = "default"
   user_data_path     = "./user-data.cfg"
   vm_count           = 1
   cpu_model_host     = true

@@ -16,15 +16,6 @@ data "null_data_source" "resource_names" {
   }
 }
 
-// use null resource to avoid not computed errors when wait for lease is false
-// data "null_data_source" "ip_addresses" {
-//   count = var.vm_count
-//   inputs = {
-//     vm_ip_addresses = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : format("%s", var.domain_prefix)
-//   }
-// }
-
-
 # Main root Volume
 resource "libvirt_volume" "volume" {
   name           = format("%s%s%d.qcow2", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
@@ -87,7 +78,7 @@ resource "libvirt_domain" "domain" {
     wait_for_lease = var.wait_for_lease
   }
 
-  // IMPORTANT: this is a known bug on cloud images, since they expect a console
+  // IMPORTANT: this is a known bug on cloud images, as they expect a console
   // we need to pass it
   // https://bugs.launchpad.net/cloud-images/+bug/1573095
   console {

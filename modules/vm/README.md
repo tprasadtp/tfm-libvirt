@@ -2,7 +2,7 @@
 
 | Name | Version |
 |------|---------|
-| libvirt | n/a |
+| libvirt | 0.6.2 |
 | null | n/a |
 | template | n/a |
 
@@ -12,10 +12,11 @@
 |------|-------------|------|---------|:-----:|
 | cloud\_image\_format | Cloud Image Format | `string` | n/a | yes |
 | cloud\_image\_url | Cloud Image URL | `string` | n/a | yes |
-| domain\_prefix | Domain Prefix. If count is > 1, -{count} is appended to the domain created. Seperator can be configured with variable. | `string` | n/a | yes |
+| domain\_prefix | Domain Prefix. Domains will be named {prefix}{seperator}{index}. Same pattern will be used for hostnames and volume names. | `string` | n/a | yes |
 | network\_config\_path | Path to Network config | `string` | n/a | yes |
 | user\_data\_path | Path to User data config | `string` | n/a | yes |
-| vm\_addresses | List of addresses to assing to VMs. These MUST be in the network. If you wish to create multiple VMs, but only few with specified IP, import this module twice and specifu vm-address in one of them. | `list(string)` | n/a | yes |
+| vm\_addresses | List of addresses to assign to VMs. These MUST be in the network. If you wish to create multiple VMs, but only few with specified IP, import this module twice and specifu vm-address in one of them. | `list(string)` | n/a | yes |
+| architecture | Valid CPU architecture. If you set this to to non native architecture, You **MUST** set `cpu_model_host` to `false` | `string` | `"x86_64"` | no |
 | autostart | Autostart the Domain | `bool` | `false` | no |
 | cloud\_image\_pool | Pool to use downloaded cloud images | `string` | `"default"` | no |
 | cpu\_count | CPUs to allocate to VM | `number` | `1` | no |
@@ -24,7 +25,7 @@
 | domain\_prefix\_index\_seperator | Charachter to be used for seperating domain prefix and index. Only applies if count is > 1 | `string` | `"-"` | no |
 | enable\_uefi | Enable UEFI. You MUST have a supported system, suppoeted guest image and have `ovmf`(Debian.Ubuntu) or `edk2-ovmf`(RHEL/CentOS) package installed. | `bool` | `false` | no |
 | memory\_size | Memory size in MiB | `number` | `512` | no |
-| network | Network Name to attach VM | `string` | `"default"` | no |
+| network\_name | Network Name to attach VM | `string` | `"default"` | no |
 | pool | Pool for Disks | `string` | `"default"` | no |
 | uefi\_firmware\_path | Path to OVFM firmware. Only applies if `enable_uefi` is set to true. Default is only valid on Debian hosts. On CentOS hosts, use `/usr/share/OVMF/OVMF_CODE.secboot.fd` | `string` | `"/usr/share/OVMF/OVMF_CODE.fd"` | no |
 | vm\_count | Number of VM Instances to create | `number` | `1` | no |

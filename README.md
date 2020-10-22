@@ -20,17 +20,17 @@ with [libvirt][terraform-libvirt] provider.
 
 ## Usage
 
+1. Download and unpack libvirt provider.
+1. `mkdir -p ~/.terraform.d/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.2/linux_amd64/
 1. `modules/net` - [Creates a Network](./modules/net/README.md)
 1. `modules/vm` - [Creates VM(s)](./modules/vm/README.md)
 
 ```hcl
-provider "libvirt" {
-  uri = "qemu+ssh://user@hostname/system"
-}
 
 module "virtual_machine" {
   source = "../../modules/vm"
 
+  libvirt_uri     = "qemu+ssh://user@hostname/system"
   cloud_image_url = "https://cloud-images.ubuntu.com/minimal/releases/bionic/release/ubuntu-18.04-minimal-cloudimg-amd64.img"
   cloud_image_format = "raw"
   domain_prefix      = "test"

@@ -19,42 +19,43 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        tfv: [0.12.20]
+        tfv: [0.13.5]
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
       # UNDOC:: Force use qemu on actions
       TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE: "qemu"
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
       - name: Install Terraform
-        run: |
-          mkdir -p vendor
-          echo "Getting Terraform"
-          curl -sSfL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip -o vendor/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-          echo "Getting Checksums"
-          curl -sSfL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_SHA256SUMS -o vendor/SHA256SUMS
-          echo "Verifying Checksums"
-          cd vendor
-          ls -alh
-          sha256sum --ignore-missing -c SHA256SUMS
-          echo "Installing Terraform"
-          sudo unzip -o terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/local/bin/
-          sudo chmod 755 /usr/local/bin/terraform
-        env:
-          TERRAFORM_VERSION: ${{ matrix.tfv }}
+        uses: hashicorp/setup-terraform@v1
+          with:
+            terraform_version: {{ matrix.tfv }}
       - name: Permission fixer
         run: |
             sudo mkdir -p /etc/libvirt
             sudo chmod 755 /etc/libvirt
             echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
-      - name: Install Provider & Packages
+      - name: Install Provider
         run: |
-            sudo sh -c "echo 'deb http://download.opensuse.org/repositories/systemsmanagement:/terraform/Ubuntu_18.04/ /' > /etc/apt/sources.list.d/systemsmanagement:terraform.list"
-            wget -nv https://download.opensuse.org/repositories/systemsmanagement:terraform/Ubuntu_18.04/Release.key -O vendor/Release.key
-            sudo apt-key add - < vendor/Release.key
-            sudo apt-get update
-            sudo apt-get -qq --yes --force-yes -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install terraform-provider-libvirt mkisofs libvirt-daemon-system cpu-checker
+          make install-provider
+      - name: Install Packages
+        run: |
+            sudo apt-get -qq update
+            sudo apt-get install -qq -y \
+              libvirt-daemon-system \
+              libvirt-dev \
+              python3-libvirt \
+              virt-manager \
+              mkisofs \
+              python3-pip \
+              python3-setuptools \
+              python3-libvirt \
+              python3-lxml
       - name: Platform Info
         run: |
             echo "KVM Status"
@@ -71,43 +72,22 @@ jobs:
             echo "Host Validation"
             echo "-----------"
             sudo -E virt-host-validate || true
-      - name: Validate Provider
-        run: |
-            # Terraform
-            echo "Terraform Details"
-            echo "-----------"
-            sudo -E -H terraform version
-            sudo -E -H terraform-provider-libvirt --version
-            # Link
-            echo "Symlink Plugin"
-            echo "-----------"
-            sudo mkdir -p ${HOME}/.terraform.d/plugins
-            sudo ln -s $(which terraform-provider-libvirt) ${HOME}/.terraform.d/plugins/terraform-provider-libvirt
       - name: 'Terraform Format'
         run: make fmt-lint
       - name: 'Terraform Validate'
         # MUST run as sudo
         run: sudo -E make validate
-      - name: Start Default Pool
+      - name: Start default pool
         run: |
           sudo mkdir -p /var/lib/libvirt/images
           sudo virsh pool-define test/default-pool.xml
           sudo virsh pool-start default
-      - name: Test [Create]
-        # We need -E and -H as plugins are installed as normal user
+      - name: Install Assert dependencies
         run: |
-          cd test/ubuntu
-          echo "Installing system Dependencies"
-          echo "-----------"
-          sudo apt-get install -y mkisofs python3-pip python3-setuptools python3-libvirt python3-lxml
-          echo "-----------"
-          sudo -E terraform init
-          sudo -E terraform apply -auto-approve
-      - name: Test [Assert]
+          python get-poetry.py -y
+          source $HOME/.poetry/env
+          poetry export -o requirements.txt
+      - name: Install Test dependencies
         run: |
-          sudo pip3 install -r test/requirements.txt
+          sudo pip3 install -r requirements.txt
           sudo -H -E make assert-ubuntu
-      - name: Test [Destroy]
-        run: |
-          cd test/ubuntu
-          sudo -E terraform destroy -force

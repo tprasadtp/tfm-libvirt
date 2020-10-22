@@ -1,3 +1,8 @@
+variable "libvirt_uri" {
+  type        = string
+  description = "libvirt URI"
+  default     = "qemu:///system"
+}
 
 variable "name" {
   type        = string
@@ -23,7 +28,11 @@ variable "autostart" {
 variable "mode" {
   type        = string
   default     = "nat"
-  description = "Network Mode. Can be `none`, `nat`, `bridge`. If bridge is specified, an existing `bridge_name` device MUST be specified."
+  description = "Network Mode. Can be `none` or `nat` or `bridge`. If net to bridge, `bridge_device` name MUST be specified!"
+  validation {
+    condition     = var.mode == "none" || var.mode == "nat"
+    error_message = "Network mode can be none or nat or bridge."
+  }
 }
 
 variable "bridge_device" {

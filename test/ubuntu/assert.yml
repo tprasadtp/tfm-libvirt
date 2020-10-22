@@ -36,12 +36,12 @@
     - name: Assert | VMs ar Running
       assert:
         that:
-          - lv_viminfo.test1.memory == "524288"
-          - lv_viminfo.test1.state == "running"
-          - lv_viminfo.test1.nrVirtCpu == 1
-          - lv_viminfo.test2.memory == "524288"
-          - lv_viminfo.test2.state == "running"
-          - lv_viminfo.test2.nrVirtCpu == 1
+          - lv_viminfo.test_1.memory == "524288"
+          - lv_viminfo.test_1.state == "running"
+          - lv_viminfo.test_1.nrVirtCpu == 1
+          - lv_viminfo.test_2.memory == "524288"
+          - lv_viminfo.test_2.state == "running"
+          - lv_viminfo.test_2.nrVirtCpu == 1
         success_msg: "VMs are is up and running"
         fail_msg: "One or more VMs failed to run with right config"
       tags:

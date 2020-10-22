@@ -7,10 +7,10 @@ variable "cloud_image_format" {
   type        = string
   description = "Cloud Image Format"
 
-  // validation {
-  //   condition     = var.cloud_image_format != "raw" || var.cloud_image_format != "qcow2"
-  //   error_message = "Image format can be qcow2 or raw."
-  // }
+  validation {
+    condition     = var.cloud_image_format != "raw" || var.cloud_image_format != "qcow2"
+    error_message = "Image format can be qcow2 or raw."
+  }
 }
 
 variable "disk_size" {
@@ -18,10 +18,10 @@ variable "disk_size" {
   description = "Root FS disk size in GB. Please do not specify it in bytes!"
   default     = 20
 
-  // validation {
-  //   condition     = var.disk_size < 10240
-  //   error_message = "RootFS sixe MUST be in GB. It looks like you ar using it in other units."
-  // }
+  validation {
+    condition     = var.disk_size < 10240
+    error_message = "RootFS sixe MUST be in GB. It looks like you ar using it in other units."
+  }
 }
 
 variable "network_name" {
@@ -32,14 +32,14 @@ variable "network_name" {
 
 variable "vm_addresses" {
   type        = list(string)
-  description = "List of addresses to assing to VMs. These MUST be in the network. If you wish to create multiple VMs, but only few with specified IP, import this module twice and specifu vm-address in one of them."
+  description = "List of addresses to assign to VMs. These MUST be in the network. If you wish to create multiple VMs, but only few with specified IP, import this module twice and specifu vm-address in one of them."
   default     = null
 
-  // check if length is same as count
-  // validation {
-  //   condition     = var.vm_addresses == null || length(var.vm_addresses) == var.vm_count
-  //   error_message = "Invalid length when not null. List should be as long as number of VMs to create."
-  // }
+  #  check if length is same as count
+  # validation {
+  #   condition     = var.vm_addresses == null || length(var.vm_addresses) == var.vm_count
+  #   error_message = "Invalid length when not null. List should be as long as number of VMs to create."
+  # }
 }
 
 variable "wait_for_lease" {
@@ -64,10 +64,10 @@ variable "cpu_count" {
   description = "CPUs to allocate to VM"
   default     = 1
 
-  // validation {
-  //   condition     = var.cpu_count >= 1
-  //   error_message = "Number of vCPUs to allocate MUST be positive integer."
-  // }
+  validation {
+    condition     = var.cpu_count >= 1
+    error_message = "Number of vCPUs to allocate MUST be positive integer."
+  }
 }
 
 variable "architecture" {
@@ -75,10 +75,10 @@ variable "architecture" {
   description = "Valid CPU architecture. If you set this to to non native architecture, You **MUST** set `cpu_model_host` to `false`"
   default     = "x86_64"
 
-  // validation {
-  //   condition     = var.architecture == "x86_64" || var.architecture == "aarch64"
-  //   error_message = "We only Support 64 bit images(for now)."
-  // }
+  validation {
+    condition     = var.architecture == "x86_64" || var.architecture == "aarch64"
+    error_message = "We only Support 64 bit images(for now)."
+  }
 }
 
 variable "cpu_model_host" {
@@ -128,10 +128,10 @@ variable "domain_prefix_index_seperator" {
   type        = string
   default     = "-"
 
-  // validation {
-  //   condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
-  //   error_message = "The seperator can be either empty, hyphen or underscore."
-  // }
+  validation {
+    condition     = length(var.domain_prefix_index_seperator) < 2 && can(regex("^$|[-_]", var.domain_prefix_index_seperator))
+    error_message = "The seperator can be either empty, hyphen or underscore."
+  }
 }
 
 variable "enable_uefi" {
