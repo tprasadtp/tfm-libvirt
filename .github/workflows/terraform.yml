@@ -84,17 +84,18 @@ jobs:
             sudo virsh pool-start default
       - name: Install Python Dependencies
         run: |
-            python get-poetry.py -y
+            curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+            python3 get-poetry.py -y
             source $HOME/.poetry/env
             poetry export -o requirements.txt
+            sudo pip3 install -r requirements.txt
       - name: Fetch Images
         run: |
             ./fetch/${OS_FLAVOR}.sh
         env:
           OS_FLAVOR: ${{ matrix.distro }}
-      - name: Install Test dependencies
+      - name: Test
         run: |
-            sudo pip3 install -r requirements.txt
             sudo -H -E make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}
