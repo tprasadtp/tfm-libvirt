@@ -10,7 +10,6 @@ with [libvirt][terraform-libvirt] provider.
 [![Labels](https://github.com/tprasadtp/tfm-libvirt/workflows/labels/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=labels)
 ![Analytics](https://ga-beacon.prasadt.com/UA-101760811-3/github/tfm-libvirt?pink&useReferer)
 
-
 ## Requirements
 
 - KVM supported Linux Machine
@@ -26,19 +25,24 @@ with [libvirt][terraform-libvirt] provider.
 
 ```hcl
 
+module "vnet" {
+  source       = "../../modules/net"
+  name         = "test"
+  domain_name  = "test.kvm"
+  dhcp_subnets = ["192.168.127.0/24"]
+}
+
 module "virtual_machine" {
   source             = "../../modules/vm"
-
-  cloud_image_url    = pathexpand("~cloudimg.img")
-  # This is needed!
+  cloud_image_url    = pathexpand("~/cloudimages/ubuntu-focal/focal-server-cloudimg-amd64.img")
   cloud_image_format = "raw"
-
-  # cloudinit file!
+  domain_prefix      = "test"
+  network_name       = "test"
   user_data_path     = "./user-data.cfg"
   vm_count           = 2
   vcpu               = 1
-  vmem             = 512
-
+  vmem               = 512
+  cpu_model_host     = true
   enable_uefi        = true
 }
 ```
