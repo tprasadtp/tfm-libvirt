@@ -10,7 +10,7 @@ module "virtual_machine" {
   user_data_path     = "./user-data.cfg"
   vm_count           = 1
   vcpu               = 1
-  vmem             = 512
+  vmem               = 512
   cpu_model_host     = true
 
   # ansible does not like hyphens in its dicts.

@@ -20,4 +20,3 @@ mkdir -p "${CLOUD_IMAGE_DOWNLOAD_PATH}/debian-10"
   echo -e "- Verify integrity"
   sha256sum -c --ignore-missing --strict SHA256SUMS
 )
-https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2

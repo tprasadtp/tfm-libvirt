@@ -15,7 +15,7 @@ mkdir -p "${CLOUD_IMAGE_DOWNLOAD_PATH}/ubuntu-focal"
   echo -e "- Download checksums"
   curl -sSfLO https://cloud-images.ubuntu.com/focal/current/SHA256SUMS
   echo -e "- Download image "
-  #curl -fLO --progress-bar https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
+  curl -fLO --progress-bar https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img
   echo -e "- Verify integrity"
   sha256sum -c --ignore-missing --strict SHA256SUMS
 )

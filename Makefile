@@ -80,7 +80,7 @@ install-provider: ## Installs Provider
 	@mkdir -p $(ROOT_DIR)/vendor
 	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.2/terraform-provider-libvirt-0.6.2+git.1585292411.8cbe9ad0.Ubuntu_18.04.amd64.tar.gz
 	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.2/terraform-provider-libvirt-0.6.2.sha256
-	cd $(ROOT_DIR)/vendor && sha256sum -c --quiet --ignore-missing terraform-provider-libvirt.tar.gz.sha256
+	cd $(ROOT_DIR)/vendor && sha256sum -c --quiet --ignore-missing terraform-provider-libvirt-0.6.2.sha256
 	tar -C $(LIBVIRT_PLUGIN_DIR) \
 		-xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt-0.6.2+git.1585292411.8cbe9ad0.Ubuntu_18.04.amd64.tar.gz \
 		terraform-provider-libvirt

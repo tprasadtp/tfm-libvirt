@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         tfv: [0.13.5]
-        distro: ["ubuntu"]
+        distro: ["ubuntu", "centos"]
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
       # UNDOC:: Force use qemu on actions
@@ -34,8 +34,8 @@ jobs:
           python-version: "3.8"
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
-          with:
-            terraform_version: {{ matrix.tfv }}
+        with:
+          terraform_version: ${{ matrix.tfv }}
       - name: Permission fixer
         run: |
             sudo mkdir -p /etc/libvirt
@@ -91,10 +91,10 @@ jobs:
         run: |
             ./fetch/${OS_FLAVOR}.sh
         env:
-          OS_FLAVOR: {{ matrix.distro }}
+          OS_FLAVOR: ${{ matrix.distro }}
       - name: Install Test dependencies
         run: |
             sudo pip3 install -r requirements.txt
             sudo -H -E make test-${OS_FLAVOR}
         env:
-          OS_FLAVOR: {{ matrix.distro }}
+          OS_FLAVOR: ${{ matrix.distro }}
