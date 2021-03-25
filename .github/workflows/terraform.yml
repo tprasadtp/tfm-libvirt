@@ -23,20 +23,17 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: terraform fmt -check
-        with:
-          working-directory: ./modules/${{ matrix.module }}
+        working-directory: ./modules/${{ matrix.module }}
 
       - name: Terraform Init
         id: init
         run: terraform init
-        with:
-          working-directory: ./modules/${{ matrix.module }}
+        working-directory: ./modules/${{ matrix.module }}
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        with:
-          working-directory: ./modules/${{ matrix.module }}
+        working-directory: ./modules/${{ matrix.module }}
 
   test:
     # Pin to 18.04 for now
