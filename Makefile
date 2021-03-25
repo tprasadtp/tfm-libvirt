@@ -7,7 +7,7 @@ ROOT_DIR := $(patsubst %/, %, $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 .DEFAULT_GOAL := help
 
 # Set install prefix if not set already
-LIBVIRT_PLUGIN_DIR := $(HOME)/.local/share/terraform/plugins/local.tprasadtp.github.io/local/libvirt/0.6.2/linux_amd64/
+LIBVIRT_PLUGIN_DIR := $(HOME)/.local/share/terraform/plugins/registry.terraform.io/dmacvicar/libvirt/0.6.2/linux_amd64
 
 # Image download prefix
 CLOUD_IMAGE_DOWNLOAD_PATH ?= $(HOME)/Virtual/installers/cloudimages
@@ -63,7 +63,7 @@ fmt-lint: ## Terraform fmt lint
 test-ubuntu: ## Test Ubuntu+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
 	cd $(ROOT_DIR)/test/ubuntu && terraform init && terraform apply -auto-approve
-	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/ubuntu/assert.yml
+	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/assert.yml
 	cd $(ROOT_DIR)/test/ubuntu && terraform destroy -force
 
 .PHONY: test-centos

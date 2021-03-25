@@ -14,6 +14,6 @@ output "domain_volumes" {
 }
 
 output "hostnames" {
-  value       = data.null_data_source.resource_names.*.outputs.hostnames
+  value       = local.hostnames
   description = "Hostname(s) as seen by cloudinit"
 }

@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "tf-libvirt"
-version = "0.2.0"
+name = "tfm-libvirt"
+version = "0.3.0"
 description = "Terraform modules for libvirt"
 authors = ["Prasad Tengse <tprasadtp@users.noreply.github.com>"]
 

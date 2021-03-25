@@ -12,7 +12,7 @@ module "virtual_machine" {
   cloud_image_format = "raw"
   domain_prefix      = "test"
   network_name       = "test"
-  user_data_path     = "./user-data.cfg"
+  user_data          = file("${path.module}/user-data.cfg")
   vm_count           = 2
   vcpu               = 1
   vmem               = 512

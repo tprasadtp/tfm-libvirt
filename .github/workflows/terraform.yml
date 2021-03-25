@@ -1,101 +1,99 @@
-# yamllint disable-line rule:document-start
+name: terraform
+# Triggers
 on:
   push:
     branches:
-      - "**"
-    paths-ignore:
-      - ".gitignore"
-      - ".envrc"
-      - "**.md"
-      - ".vscode/**"
-      - ".dependabot/**"
+      - "*"
   pull_request:
-    branches:
-      - master
-name: terraform
 jobs:
-  lint:
-    name: 'terraform'
-    runs-on: ubuntu-latest
+  test:
+    # Pin to 18.04 for now
+    runs-on: ubuntu-18.04
+    # Test Matrix
     strategy:
       matrix:
-        tfv: [0.13.5]
-        distro: ["ubuntu", "centos"]
+        distro: ["ubuntu"]
+    # Override Provider configs on CI
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
       # UNDOC:: Force use qemu on actions
       TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE: "qemu"
+    # Steps
     steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ matrix.tfv }}
+
       - name: Permission fixer
         run: |
-            sudo mkdir -p /etc/libvirt
-            sudo chmod 755 /etc/libvirt
-            echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
+          sudo mkdir -p /etc/libvirt
+          sudo chmod 755 /etc/libvirt
+          echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
+
       - name: Install Provider
         run: |
           make install-provider
+
       - name: Install Packages
         run: |
-            sudo apt-get -qq update
-            sudo apt-get install -qq -y \
-              libvirt-daemon-system \
-              libvirt-dev \
-              virt-manager \
-              mkisofs \
-              python3-pip \
-              python3-setuptools \
-              python3-libvirt \
-              python3-lxml
+          sudo apt-get -qq update
+          sudo apt-get install -qq -y \
+            libvirt-daemon-system \
+            libvirt-dev \
+            virt-manager \
+            mkisofs \
+            python3-pip \
+            python3-setuptools \
+            python3-libvirt \
+            python3-lxml
+
       - name: Platform Info
         run: |
-            echo "KVM Status"
-            echo "-----------"
-            # Because kvm-ok might return non zero we will make it drink some truth serum
-            sudo kvm-ok || true
-            # Daemon
-            echo "-----------"
-            echo "Restarting Daemon"
-            sudo systemctl reload libvirtd
-            echo "Status of Daemon"
-            sudo systemctl status libvirtd
-            # Host status
-            echo "Host Validation"
-            echo "-----------"
-            sudo -E virt-host-validate || true
-      - name: 'Terraform Format'
-        run: make fmt-lint
-      - name: 'Terraform Validate'
-        # MUST run as sudo
-        run: sudo -E make validate
+          echo "KVM Status"
+          echo "-----------"
+          # Because kvm-ok might return non zero we will make it drink some Veritaserum
+          sudo kvm-ok || true
+          # Daemon
+          echo "-----------"
+          echo "Restarting Daemon"
+          sudo systemctl reload libvirtd
+          echo "Status of Daemon"
+          sudo systemctl status libvirtd
+          # Host status
+          echo "Host Validation"
+          echo "-----------"
+          sudo -E virt-host-validate || true
+
       - name: Start default pool
         run: |
-            sudo mkdir -p /var/lib/libvirt/images
-            sudo virsh pool-define test/default-pool.xml
-            sudo virsh pool-start default
+          sudo mkdir -p /var/lib/libvirt/images
+          sudo virsh pool-define test/default-pool.xml
+          sudo virsh pool-start default
+
       - name: Install Python Dependencies
         run: |
-            curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-            python3 get-poetry.py -y
-            source $HOME/.poetry/env
-            poetry export -o requirements.txt
-            sudo pip3 install -r requirements.txt
+          curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
+          python3 get-poetry.py -y
+          source $HOME/.poetry/env
+          poetry install
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: true
+
       - name: Fetch Images
         run: |
-            ./fetch/${OS_FLAVOR}.sh
+          ./fetch/${OS_FLAVOR}.sh
         env:
           OS_FLAVOR: ${{ matrix.distro }}
+
       - name: Test
         run: |
-            sudo -H -E make test-${OS_FLAVOR}
+          source .venv/bin/activate
+          sudo -H -E make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}

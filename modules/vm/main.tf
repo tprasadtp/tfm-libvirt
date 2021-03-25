@@ -8,48 +8,39 @@ resource "libvirt_volume" "base" {
   format = var.cloud_image_format
 }
 
-// define names to avoid strange errors
-data "null_data_source" "resource_names" {
-  count = var.vm_count
-  inputs = {
-    hostnames = var.vm_count > 1 ? format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1) : format("%s", var.domain_prefix)
-  }
+
+locals {
+  hostnames = [for i in range(var.vm_count) : format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, i + 1)]
 }
 
 # Main root Volume
 resource "libvirt_volume" "volume" {
-  name           = format("%s%s%d.qcow2", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
+  count = var.vm_count
+
+  name           = format("%s.qcow2", local.hostnames[count.index])
   base_volume_id = libvirt_volume.base.id
   pool           = var.pool
   size           = var.disk_size * 1024 * 1024 * 1024
   format         = "qcow2"
-  count          = var.vm_count
 }
 
 
-# Cloud init config
-data "template_file" "user_data" {
-  count    = var.vm_count
-  template = file(var.user_data_path)
-  vars = {
-    hostname = data.null_data_source.resource_names[count.index].outputs.hostnames
-  }
-}
 
 // For more info about paramater check this out
 // https://github.com/dmacvicar/terraform-provider-libvirt/blob/master/website/docs/r/cloudinit.html.markdown
 resource "libvirt_cloudinit_disk" "cloudinit" {
   count     = var.vm_count
-  name      = format("%s%s%d.cloudinit.iso", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
-  user_data = data.template_file.user_data[count.index].rendered
+  name      = format("%s.cloudinit.iso", local.hostnames[count.index])
+  user_data = var.user_data
+  meta_data = format("local-hostname: %s\n ", local.hostnames[count.index])
   pool      = var.pool
 }
 
 // Create the machine
 resource "libvirt_domain" "domain" {
+  count = var.vm_count
 
-  count  = var.vm_count
-  name   = format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, count.index + 1)
+  name   = local.hostnames[count.index]
   memory = var.vmem
   arch   = var.architecture
   vcpu   = var.vcpu
@@ -69,7 +60,7 @@ resource "libvirt_domain" "domain" {
 
     // Network must already exist
     network_name = var.network_name
-    hostname     = data.null_data_source.resource_names[count.index].outputs.hostnames
+    hostname     = format("%s.qcow2", local.hostnames[count.index])
 
     // only provide IP when we have been provided one
     // This is a list as VMs can have multiple IPs(provider supports it).
@@ -93,13 +84,14 @@ resource "libvirt_domain" "domain" {
     target_port = "1"
   }
 
-  disk {
-    volume_id = libvirt_volume.volume[count.index].id
-  }
-
   graphics {
     type        = "spice"
     listen_type = "address"
     autoport    = true
   }
+
+  disk {
+    volume_id = libvirt_volume.volume[count.index].id
+  }
+
 }

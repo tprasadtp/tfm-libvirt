@@ -4,7 +4,7 @@ This repository contains terraform modules to quickly create `libvirt` VMs from 
 with [libvirt][terraform-libvirt] provider.
 
 [![TFM](https://github.com/tprasadtp/tfm-libvirt/workflows/terraform/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=terraform)
-![Terraform-Version](https://img.shields.io/badge/terraform-0.13.x-623CE4?logo=terraform)
+![Terraform-Version](https://img.shields.io/badge/terraform-0.14.x-623CE4?logo=terraform)
 ![libvirt-Version](https://img.shields.io/badge/provider--libvirt-0.6.2-623CE4?logo=terraform&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 [![Labels](https://github.com/tprasadtp/tfm-libvirt/workflows/labels/badge.svg)](https://github.com/tprasadtp/tfm-libvirt/actions?workflow=labels)
@@ -38,7 +38,7 @@ module "virtual_machine" {
   cloud_image_format = "raw"
   domain_prefix      = "test"
   network_name       = "test"
-  user_data_path     = "./user-data.cfg"
+  user_data          = file("./user-data.cfg")
   vm_count           = 2
   vcpu               = 1
   vmem               = 512
@@ -69,7 +69,6 @@ VMs use cloud images as its easier to configure them them using `cloud-init`.
 - [Fedora](https://alt.fedoraproject.org/cloud/)
 - [OpenSUSE](https://software.opensuse.org/distributions/leap#jeos-ports)
 - ArchLinux(You must build the qcow2 image or use openstack image if available)
-- ~~CoreOS~~ **REMOVED** [CoreOS will reach EoL soon](https://coreos.com/os/eol/).
 
 [terraform]: https://terraform.io
 [terraform-libvirt]: https://github.com/dmacvicar/terraform-provider-libvirt
