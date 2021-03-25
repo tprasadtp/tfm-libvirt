@@ -10,7 +10,7 @@ resource "libvirt_volume" "base" {
 
 
 locals {
-  hostnames = [for i in range(var.vm_count) : format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, i+1)]
+  hostnames = [for i in range(var.vm_count) : format("%s%s%d", var.domain_prefix, var.domain_prefix_index_seperator, i + 1)]
 }
 
 # Main root Volume

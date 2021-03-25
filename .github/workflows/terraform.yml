@@ -99,9 +99,6 @@ jobs:
           echo "-----------"
           sudo -E virt-host-validate || true
 
-      - name: 'Terraform Format'
-        run: make fmt-lint
-
       - name: 'Terraform Validate'
         # MUST run as sudo
         run: sudo -E make validate
