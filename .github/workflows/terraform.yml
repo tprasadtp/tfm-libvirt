@@ -1,17 +1,10 @@
 # yamllint disable-line rule:document-start
+name: terraform
 on:
   push:
     branches:
-      - "**"
-    paths-ignore:
-      - ".gitignore"
-      - ".envrc"
-      - "**.md"
-      - ".vscode/**"
-      - ".dependabot/**"
+      - "*"
   pull_request:
-    branches:
-      - master
 name: terraform
 jobs:
   lint:
