@@ -1,13 +1,12 @@
-# yamllint disable-line rule:document-start
 name: terraform
+# Triggers
 on:
   push:
     branches:
       - "*"
   pull_request:
-name: terraform
 jobs:
-  lint:
+  test:
     name: 'terraform'
     runs-on: ubuntu-18.04
     strategy:
