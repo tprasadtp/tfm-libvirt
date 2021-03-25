@@ -6,23 +6,6 @@ on:
       - "*"
   pull_request:
 jobs:
-  lint:
-    # Pin to 18.04 for now
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-
-      - name: Install Provider
-        run: make install-provider
-
-      - name: 'Terraform Format'
-        run: make fmt-lint
-
-      - name: 'Terraform Validate'
-        # MUST run as sudo
-        run: sudo -E make validate
-
   test:
     # Pin to 18.04 for now
     runs-on: ubuntu-18.04
@@ -98,9 +81,9 @@ jobs:
           curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
           python3 get-poetry.py -y
           source $HOME/.poetry/env
-          poetry export -o requirements.txt
-          sudo -H pip3 install --upgrade pip
-          sudo -H pip3 install -r requirements.txt
+          poetry install
+        env:
+          POETRY_VIRTUALENVS_IN_PROJECT: true
 
       - name: Fetch Images
         run: |
@@ -110,6 +93,7 @@ jobs:
 
       - name: Test
         run: |
+          source .venv/bin/activate
           sudo -H -E make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}
