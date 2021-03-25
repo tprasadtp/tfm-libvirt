@@ -16,34 +16,36 @@ name: terraform
 jobs:
   lint:
     name: 'terraform'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
-        tfv: [0.13.5]
-        distro: ["ubuntu", "centos"]
+        distro: ["ubuntu"]
     env:
       LIBVIRT_DEFAULT_URI: "qemu:///system"
       # UNDOC:: Force use qemu on actions
       TERRAFORM_LIBVIRT_TEST_DOMAIN_TYPE: "qemu"
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v2
+
+   steps:
+      - uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: "3.8"
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ matrix.tfv }}
+
       - name: Permission fixer
         run: |
             sudo mkdir -p /etc/libvirt
             sudo chmod 755 /etc/libvirt
             echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
+
       - name: Install Provider
         run: |
           make install-provider
+
       - name: Install Packages
         run: |
             sudo apt-get -qq update
@@ -56,11 +58,12 @@ jobs:
               python3-setuptools \
               python3-libvirt \
               python3-lxml
+
       - name: Platform Info
         run: |
             echo "KVM Status"
             echo "-----------"
-            # Because kvm-ok might return non zero we will make it drink some truth serum
+            # Because kvm-ok might return non zero we will make it drink some Veritaserum
             sudo kvm-ok || true
             # Daemon
             echo "-----------"
@@ -72,16 +75,20 @@ jobs:
             echo "Host Validation"
             echo "-----------"
             sudo -E virt-host-validate || true
+
       - name: 'Terraform Format'
         run: make fmt-lint
+
       - name: 'Terraform Validate'
         # MUST run as sudo
         run: sudo -E make validate
+
       - name: Start default pool
         run: |
             sudo mkdir -p /var/lib/libvirt/images
             sudo virsh pool-define test/default-pool.xml
             sudo virsh pool-start default
+
       - name: Install Python Dependencies
         run: |
             curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
@@ -89,11 +96,13 @@ jobs:
             source $HOME/.poetry/env
             poetry export -o requirements.txt
             sudo pip3 install -r requirements.txt
+
       - name: Fetch Images
         run: |
             ./fetch/${OS_FLAVOR}.sh
         env:
           OS_FLAVOR: ${{ matrix.distro }}
+
       - name: Test
         run: |
             sudo -H -E make test-${OS_FLAVOR}

@@ -4,6 +4,9 @@ terraform {
       source  = "local.tprasadtp.github.io/local/libvirt"
       version = "0.6.2"
     }
+    template = {
+      source = "hashicorp/template"
+    }
   }
-  required_version = ">= 0.13"
+  required_version = ">= 0.14"
 }

@@ -7,7 +7,7 @@ ROOT_DIR := $(patsubst %/, %, $(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 .DEFAULT_GOAL := help
 
 # Set install prefix if not set already
-LIBVIRT_PLUGIN_DIR := $(HOME)/.local/share/terraform/plugins/local.tprasadtp.github.io/local/libvirt/0.6.2/linux_amd64/
+LIBVIRT_PLUGIN_DIR := $(HOME)/.local/share/terraform/plugins/local.tprasadtp.github.io/local/libvirt/0.6.3/linux_amd64/
 
 # Image download prefix
 CLOUD_IMAGE_DOWNLOAD_PATH ?= $(HOME)/Virtual/installers/cloudimages
@@ -63,7 +63,7 @@ fmt-lint: ## Terraform fmt lint
 test-ubuntu: ## Test Ubuntu+cloud-init Tests
 	@echo -e "\033[92m➜ $@ \033[0m"
 	cd $(ROOT_DIR)/test/ubuntu && terraform init && terraform apply -auto-approve
-	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/ubuntu/assert.yml
+	ansible-playbook -i $(ROOT_DIR)/test/inventory.ini $(ROOT_DIR)/test/assert.yml
 	cd $(ROOT_DIR)/test/ubuntu && terraform destroy -force
 
 .PHONY: test-centos
@@ -78,11 +78,11 @@ install-provider: ## Installs Provider
 	@echo -e "\033[92m➜ $@ \033[0m"
 	@mkdir -p $(LIBVIRT_PLUGIN_DIR)
 	@mkdir -p $(ROOT_DIR)/vendor
-	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.2/terraform-provider-libvirt-0.6.2+git.1585292411.8cbe9ad0.Ubuntu_18.04.amd64.tar.gz
-	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.2/terraform-provider-libvirt-0.6.2.sha256
-	cd $(ROOT_DIR)/vendor && sha256sum -c --quiet --ignore-missing terraform-provider-libvirt-0.6.2.sha256
+	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.3/terraform-provider-libvirt-0.6.3+git.1604843676.67f4f2aa.Ubuntu_20.04.amd64.tar.gz
+	cd $(ROOT_DIR)/vendor && curl -sSfLO https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.3/terraform-provider-libvirt-0.6.3.sha256
+	cd $(ROOT_DIR)/vendor && sha256sum -c --quiet --ignore-missing terraform-provider-libvirt-0.6.3.sha256
 	tar -C $(LIBVIRT_PLUGIN_DIR) \
-		-xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt-0.6.2+git.1585292411.8cbe9ad0.Ubuntu_18.04.amd64.tar.gz \
+		-xvzf $(ROOT_DIR)/vendor/terraform-provider-libvirt-0.6.3+git.1604843676.67f4f2aa.Ubuntu_20.04.amd64.tar.gz \
 		terraform-provider-libvirt
 
 .PHONY: docs

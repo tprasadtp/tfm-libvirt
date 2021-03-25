@@ -106,9 +106,10 @@ variable "network_config_path" {
   default     = null
 }
 
-variable "user_data_path" {
-  description = "Path to User data config"
+variable "user_data" {
+  description = "Path to User data "
   type        = string
+  default     = ""
 }
 
 variable "vm_count" {
