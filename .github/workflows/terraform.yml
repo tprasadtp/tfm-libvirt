@@ -99,7 +99,8 @@ jobs:
           python3 get-poetry.py -y
           source $HOME/.poetry/env
           poetry export -o requirements.txt
-          sudo pip3 install -r requirements.txt
+          sudo -H pip3 install --upgrade pip
+          sudo -H pip3 install -r requirements.txt
 
       - name: Fetch Images
         run: |
