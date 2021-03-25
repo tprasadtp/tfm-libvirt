@@ -9,7 +9,7 @@ module "vnet" {
 module "virtual_machine" {
   source             = "../../modules/vm"
   cloud_image_url    = pathexpand("~/Virtual/installers/cloudimages/ubuntu-focal/focal-server-cloudimg-amd64.img")
-  cloud_image_format = "raw"
+  cloud_image_format = "qcow2"
   domain_prefix      = "test"
   network_name       = "test"
   user_data          = file("${path.module}/user-data.cfg")
