@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     libvirt = {
-      source  = "local.tprasadtp.github.io/local/libvirt"
+      source  = "dmacvicar/libvirt"
       version = "0.6.2"
     }
     template = {

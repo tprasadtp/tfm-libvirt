@@ -9,10 +9,6 @@ jobs:
   lint:
     # Pin to 18.04 for now
     runs-on: ubuntu-18.04
-    # Test Matrix
-    strategy:
-      matrix:
-        module: ["vm", "net"]
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -20,20 +16,12 @@ jobs:
       - name: Install Provider
         run: make install-provider
 
-      - name: Terraform fmt
-        id: fmt
-        run: terraform fmt -check
-        working-directory: ./modules/${{ matrix.module }}
+      - name: 'Terraform Format'
+        run: make fmt-lint
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        working-directory: ./modules/${{ matrix.module }}
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-        working-directory: ./modules/${{ matrix.module }}
+      - name: 'Terraform Validate'
+        # MUST run as sudo
+        run: sudo -E make validate
 
   test:
     # Pin to 18.04 for now
@@ -98,10 +86,6 @@ jobs:
           echo "Host Validation"
           echo "-----------"
           sudo -E virt-host-validate || true
-
-      - name: 'Terraform Validate'
-        # MUST run as sudo
-        run: sudo -E make validate
 
       - name: Start default pool
         run: |

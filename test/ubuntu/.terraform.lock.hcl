@@ -9,6 +9,14 @@ provider "local.tprasadtp.github.io/local/libvirt" {
   ]
 }
 
+provider "registry.terraform.io/dmacvicar/libvirt" {
+  version     = "0.6.2"
+  constraints = "0.6.2"
+  hashes = [
+    "h1:qH78z9XLBgY4Ct+gWQwF+BbvzZU745MYWhZ1wxiGRVA=",
+  ]
+}
+
 provider "registry.terraform.io/hashicorp/template" {
   version = "2.2.0"
   hashes = [
