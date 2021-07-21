@@ -1,39 +1,43 @@
+# net
+
+Libvirt Network - Create a libvirt network. This wont work if using libvirt user session.
+
+<!-- BEGIN_TF_DOCS -->
+
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.14 |
-| libvirt | 0.6.2 |
+| <a name="requirement_libvirt"></a> [libvirt](#requirement\_libvirt) | 0.6.10 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| libvirt | 0.6.2 |
+| <a name="provider_libvirt"></a> [libvirt](#provider\_libvirt) | 0.6.10 |
 
 ## Modules
 
-No Modules.
+No modules.
 
 ## Resources
 
-| Name |
-|------|
-
-| libvirt_network
+| Name | Type |
+|------|------|
+| [libvirt_network.net](https://registry.terraform.io/providers/dmacvicar/libvirt/0.6.10/docs/resources/network) | resource |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| dhcp\_subnets | DHCP Subnets | `list(string)` | n/a | yes |
-| domain\_name | Network Domain Name | `string` | n/a | yes |
-| name | Name of the Network | `string` | n/a | yes |
-| autostart | Auto Start Network after boot | `bool` | `false` | no |
-| bridge\_device | Name of the bridge device. ONLY used if mode is `bridge`. This should already be present. Module will not creaet this for you. | `string` | `null` | no |
-| libvirt\_uri | libvirt URI | `string` | `"qemu:///system"` | no |
-| mode | Network Mode. Can be `none` or `nat` or `bridge`. If net to bridge, `bridge_device` name MUST be specified! | `string` | `"nat"` | no |
+| <a name="input_domain"></a> [domain](#input\_domain) | Network DHCP Domain Name | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the Network | `string` | n/a | yes |
+| <a name="input_subnet"></a> [subnet](#input\_subnet) | DHCP Subnet | `string` | n/a | yes |
+| <a name="input_autostart"></a> [autostart](#input\_autostart) | Auto Start Network after boot | `bool` | `true` | no |
+| <a name="input_libvirt_uri"></a> [libvirt\_uri](#input\_libvirt\_uri) | libvirt URI | `string` | `"qemu:///system"` | no |
 
 ## Outputs
 
-No output.
+No outputs.
+
+<!-- END_TF_DOCS -->

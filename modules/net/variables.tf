@@ -9,34 +9,18 @@ variable "name" {
   description = "Name of the Network"
 }
 
-variable "domain_name" {
+variable "domain" {
   type        = string
-  description = "Network Domain Name"
+  description = "Network DHCP Domain Name"
 }
 
-variable "dhcp_subnets" {
-  type        = list(string)
-  description = "DHCP Subnets"
+variable "subnet" {
+  type        = string
+  description = "DHCP Subnet"
 }
 
 variable "autostart" {
   type        = bool
-  default     = false
+  default     = true
   description = "Auto Start Network after boot"
-}
-
-variable "mode" {
-  type        = string
-  default     = "nat"
-  description = "Network Mode. Can be `none` or `nat` or `bridge`. If net to bridge, `bridge_device` name MUST be specified!"
-  validation {
-    condition     = var.mode == "none" || var.mode == "nat"
-    error_message = "Network mode can be none or nat or bridge."
-  }
-}
-
-variable "bridge_device" {
-  type        = string
-  default     = null
-  description = "Name of the bridge device. ONLY used if mode is `bridge`. This should already be present. Module will not creaet this for you."
 }

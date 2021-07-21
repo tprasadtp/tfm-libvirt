@@ -21,7 +21,7 @@
           - lv_netinfo.networks.test.domain == "test.kvm"
           - lv_netinfo.networks.test.state == "active"
           - lv_netinfo.networks.test.forward_mode == "nat"
-          - lv_netinfo.networks.test.autostart == "no"
+          - lv_netinfo.networks.test.autostart == "yes"
         success_msg: "Network test (NAT) is up and running"
         fail_msg: "Network test (NAT) is not up and running"
       tags:
@@ -36,13 +36,10 @@
     - name: Assert | VMs ar Running
       assert:
         that:
-          - lv_viminfo.test_1.memory == "524288"
-          - lv_viminfo.test_1.state == "running"
-          - lv_viminfo.test_1.nrVirtCpu == 1
-          - lv_viminfo.test_2.memory == "524288"
-          - lv_viminfo.test_2.state == "running"
-          - lv_viminfo.test_2.nrVirtCpu == 1
+          - lv_viminfo.test.memory == "262144"
+          - lv_viminfo.test.state == "running"
+          - lv_viminfo.test.nrVirtCpu == 1
         success_msg: "VMs are is up and running"
-        fail_msg: "One or more VMs failed to run with right config"
+        fail_msg: "VM failed to run with right config"
       tags:
         - vm

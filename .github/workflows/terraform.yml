@@ -7,8 +7,7 @@ on:
   pull_request:
 jobs:
   test:
-    # Pin to 18.04 for now
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     # Test Matrix
     strategy:
       matrix:
@@ -36,10 +35,6 @@ jobs:
           sudo chmod 755 /etc/libvirt
           echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
 
-      - name: Install Provider
-        run: |
-          make install-provider
-
       - name: Install Packages
         run: |
           sudo apt-get -qq update
@@ -55,6 +50,9 @@ jobs:
 
       - name: Platform Info
         run: |
+          echo "Virt Detect"
+          echo "-----------"
+          systemd-detect-virt
           echo "KVM Status"
           echo "-----------"
           # Because kvm-ok might return non zero we will make it drink some Veritaserum
