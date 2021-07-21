@@ -85,7 +85,7 @@ jobs:
 
       - name: Fetch Images
         run: |
-          ./fetch/${OS_FLAVOR}.sh
+          ./scripts/${OS_FLAVOR}.sh
         env:
           OS_FLAVOR: ${{ matrix.distro }}
 
