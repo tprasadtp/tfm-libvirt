@@ -1,11 +1,11 @@
 output "ips" {
-  value       = libvirt_domain.domain.network_interface.0.addresses.0
-  description = "Primary IP Addresses of machine(s)"
+  value       = flatten(libvirt_domain.domain.network_interface[*].addresses[*])
+  description = "IP Addresses of machine"
 }
 
 output "cloudinit_iso" {
   value       = libvirt_cloudinit_disk.cloudinit.name
-  description = "Name(s) of cloudinit disk(s) in the pool specified"
+  description = "Name of cloudinit disk in the pool specified"
 }
 
 output "root_disk" {
@@ -16,4 +16,14 @@ output "root_disk" {
 output "base_image" {
   value       = libvirt_volume.base.name
   description = "Base for Root volume aka Cloud Image base"
+}
+
+output "id" {
+  value = libvirt_domain.domain.id
+  description = "Domain ID"
+}
+
+output "name" {
+  value = libvirt_domain.domain.name
+  description = "Name of the VM/libvirt domain"
 }

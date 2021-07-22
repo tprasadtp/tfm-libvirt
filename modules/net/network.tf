@@ -28,3 +28,13 @@ resource "libvirt_network" "net" {
     local_only = true
   }
 }
+
+
+output "id" {
+  value = libvirt_network.net.id
+  description = "Network ID"
+}
+
+output "name" {
+  value = libvirt_network.net.name
+}

@@ -84,3 +84,9 @@ variable "user_data" {
   type        = string
   description = "Userdata"
 }
+
+variable "firmware" {
+  type        = string
+  default     = "/usr/share/OVMF/OVMF_CODE.fd"
+  description = "Path to OVMF firmware on host. If set to nil, UEFI is disabled"
+}

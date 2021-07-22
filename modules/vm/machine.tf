@@ -36,6 +36,9 @@ resource "libvirt_domain" "domain" {
     mode = var.vcpu_model_host == true ? "host-model" : null
   }
 
+  //Custom cmdline is not supported!
+  cmdline = []
+
   // cloudinit
   cloudinit = libvirt_cloudinit_disk.cloudinit.id
 
@@ -55,14 +58,13 @@ resource "libvirt_domain" "domain" {
 
   console {
     type        = "pty"
-    target_type = "virtio"
-    target_port = "1"
+    target_port = "0"
+    target_type = "serial"
   }
 
-  graphics {
-    type        = "spice"
-    listen_type = "address"
-    autoport    = true
+  // Remove graphics and video which are added by default :(
+  xml {
+    xslt = file("${path.module}/remove-graphics.xsl")
   }
 
   disk {

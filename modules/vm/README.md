@@ -36,6 +36,7 @@ No modules.
 | <a name="input_address"></a> [address](#input\_address) | IP address of VM (static) | `string` | `null` | no |
 | <a name="input_arch"></a> [arch](#input\_arch) | VM architecture. Change only if your are emulating other CPUs. | `string` | `"x86_64"` | no |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | Disk size in GB | `number` | `20` | no |
+| <a name="input_firmware"></a> [firmware](#input\_firmware) | Path to OVMF firmware on host. If set to nil, UEFI is disabled | `string` | `"/usr/share/OVMF/OVMF_CODE.fd"` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Memory to allocate for VM | `number` | `512` | no |
 | <a name="input_network"></a> [network](#input\_network) | Name of the Network to connect VM to | `string` | `"default"` | no |
 | <a name="input_pool"></a> [pool](#input\_pool) | Storage pool to use | `string` | `"default"` | no |
@@ -48,8 +49,10 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_base_image"></a> [base\_image](#output\_base\_image) | Base for Root volume aka Cloud Image base |
-| <a name="output_cloudinit_iso"></a> [cloudinit\_iso](#output\_cloudinit\_iso) | Name(s) of cloudinit disk(s) in the pool specified |
-| <a name="output_ips"></a> [ips](#output\_ips) | Primary IP Addresses of machine(s) |
+| <a name="output_cloudinit_iso"></a> [cloudinit\_iso](#output\_cloudinit\_iso) | Name of cloudinit disk in the pool specified |
+| <a name="output_id"></a> [id](#output\_id) | Domain ID |
+| <a name="output_ips"></a> [ips](#output\_ips) | IP Addresses of machine |
+| <a name="output_name"></a> [name](#output\_name) | Name of the VM/libvirt domain |
 | <a name="output_root_disk"></a> [root\_disk](#output\_root\_disk) | Root volume |
 
 <!-- END_TF_DOCS -->

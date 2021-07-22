@@ -42,9 +42,10 @@ This repository contains terraform modules to quickly create `libvirt` VMs from 
   }
   ```
 
-## Extra Notes
+## Notes
 
 - This module is meant to quickly create headless machines in a reproducible way.
+- VMs with UI are **NOT** supported!, vm module even strips off all video/spice devices!
 - Advanced configs are not supported. You might look into provider's documentation for creating VMs which support additional features.
 
 ## Tests
