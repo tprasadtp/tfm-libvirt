@@ -93,3 +93,4 @@ jobs:
           sudo make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}
+          HOME: /home/runner

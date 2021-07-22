@@ -8,9 +8,8 @@ module "vnet" {
 
 module "vm" {
   source            = "../../modules/vm"
-  cloudimage        = pathexpand("~/Virtual/installers/ubuntu-21.04-minimal-cloudimg-amd64.img")
+  cloudimage        = pathexpand("/Virtual/installers/ubuntu-21.04-minimal-cloudimg-amd64.img")
   cloudimage_format = "qcow2"
-  firmware          = "/usr/share/OVMF/OVMF_CODE_4M.secboot.fd"
   name              = "test"
   network           = "test"
   vcpu              = 1

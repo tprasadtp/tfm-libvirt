@@ -36,7 +36,7 @@ No modules.
 | <a name="input_address"></a> [address](#input\_address) | IP address of VM (static) | `string` | `null` | no |
 | <a name="input_arch"></a> [arch](#input\_arch) | VM architecture. Change only if your are emulating other CPUs. | `string` | `"x86_64"` | no |
 | <a name="input_disk_size"></a> [disk\_size](#input\_disk\_size) | Disk size in GB | `number` | `20` | no |
-| <a name="input_firmware"></a> [firmware](#input\_firmware) | Path to OVMF firmware on host. If set to nil, UEFI is disabled | `string` | `"/usr/share/OVMF/OVMF_CODE.fd"` | no |
+| <a name="input_firmware"></a> [firmware](#input\_firmware) | Path to OVMF firmware on host. If set to nil, UEFI is disabled (Currently not supported) | `string` | `"/usr/share/OVMF/OVMF_CODE.ms.fd"` | no |
 | <a name="input_libvirt_uri"></a> [libvirt\_uri](#input\_libvirt\_uri) | libvirt URI | `string` | `"qemu:///system"` | no |
 | <a name="input_memory"></a> [memory](#input\_memory) | Memory to allocate for VM | `number` | `512` | no |
 | <a name="input_network"></a> [network](#input\_network) | Name of the Network to connect VM to | `string` | `"default"` | no |
