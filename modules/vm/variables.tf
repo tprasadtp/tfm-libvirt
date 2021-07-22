@@ -1,3 +1,8 @@
+variable "libvirt_uri" {
+  type        = string
+  description = "libvirt URI"
+  default     = "qemu:///system"
+}
 
 variable "cloudimage" {
   type        = string
