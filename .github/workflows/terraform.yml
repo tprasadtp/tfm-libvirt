@@ -29,12 +29,6 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Permission fixer
-        run: |
-          sudo mkdir -p /etc/libvirt
-          sudo chmod 755 /etc/libvirt
-          echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
-
       - name: Install Packages
         run: |
           sudo apt-get -qq update
@@ -48,6 +42,20 @@ jobs:
             python3-libvirt \
             python3-lxml
 
+      - name: Permission fixer
+        run: |
+          echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
+          echo "-----------"
+          echo "User Groups"
+          sudo usermod -aG libvirt "${USER}"
+          sudo usermod -aG kvm "${USER}"
+          # Daemon
+          echo "-----------"
+          echo "Restarting Daemon"
+          sudo systemctl restart libvirtd
+          echo "Status of Daemon"
+          sudo systemctl status libvirtd
+
       - name: Platform Info
         run: |
           echo "Virt Detect"
@@ -57,12 +65,6 @@ jobs:
           echo "-----------"
           # Because kvm-ok might return non zero we will make it drink some Veritaserum
           sudo kvm-ok || true
-          # Daemon
-          echo "-----------"
-          echo "Restarting Daemon"
-          sudo systemctl reload libvirtd
-          echo "Status of Daemon"
-          sudo systemctl status libvirtd
           # Host status
           echo "Host Validation"
           echo "-----------"
@@ -76,9 +78,9 @@ jobs:
 
       - name: Install Python Dependencies
         run: |
-          curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-          python3 get-poetry.py -y
-          source $HOME/.poetry/env
+          curl -sSfOL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py
+          python3 install-poetry.py -y
+          poetry --version
           poetry install
         env:
           POETRY_VIRTUALENVS_IN_PROJECT: true
@@ -92,6 +94,6 @@ jobs:
       - name: Test
         run: |
           source .venv/bin/activate
-          sudo -H -E make test-${OS_FLAVOR}
+          make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}
