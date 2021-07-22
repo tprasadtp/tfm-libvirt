@@ -45,10 +45,6 @@ jobs:
       - name: Permission fixer
         run: |
           echo 'security_driver="none"' | sudo tee /etc/libvirt/qemu.conf
-          echo "-----------"
-          echo "User Groups"
-          sudo usermod -aG libvirt "${USER}"
-          sudo usermod -aG kvm "${USER}"
           # Daemon
           echo "-----------"
           echo "Restarting Daemon"
@@ -94,6 +90,6 @@ jobs:
       - name: Test
         run: |
           source .venv/bin/activate
-          make test-${OS_FLAVOR}
+          sudo make test-${OS_FLAVOR}
         env:
           OS_FLAVOR: ${{ matrix.distro }}
